@@ -1,3 +1,8 @@
+---
+layout: default
+title: 我的Blog
+---
+
 你好, Git !
 -----------
 
