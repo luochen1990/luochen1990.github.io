@@ -21,6 +21,6 @@ layout: default
 [a1]: http://www.python.org/download/
 [a2]: http://pypi.python.org/pypi/virtualenv#downloads
 [a3]: https://pypi.python.org/pypi/bottle/0.11.6
-[p1]: {{ page.title }}/p1.png
-[p2]: {{ page.title }}/p2.png
+[p1]: p1.png
+[p2]: p2.png
 
