@@ -1,3 +1,4 @@
+markdown: rdiscount
 title: 罗宸的博客
 title_en: luochen1990's blog
 permalink: /:year/:title
