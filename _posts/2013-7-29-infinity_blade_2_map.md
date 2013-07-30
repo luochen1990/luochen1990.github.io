@@ -8,6 +8,6 @@ title: 无尽之剑II地图
 图片如果不清晰的话, 可以下载下面的pdf:
 [pdf of the map][2]
 
-[1]: ../res/ED331FCD.png
-[2]: ../res/32261CDF.pdf
+[1]: {{ site.res }}/ED331FCD.png
+[2]: {{ site.res }}/32261CDF.pdf
 
