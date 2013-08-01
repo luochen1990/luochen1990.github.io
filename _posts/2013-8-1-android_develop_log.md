@@ -4,12 +4,12 @@ title: 安卓开发日志
 ---
 
 首先列出了项目开发过程中可能遇到的技术问题, 按照重要程度排序如下:
-1. [Activity之间的切换](#1)
-2. [过渡动画的添加](#2)
-3. [手势识别](#3)
-4. [布局覆盖问题](#l4)
-5. [实现动态加载内容的ListView](#l5)
-6. [相机API的调用](#l6)
+1. x[Activity之间的切换](#1)
+2. x[过渡动画的添加](#2)
+3. x[手势识别](#3)
+4. x[布局覆盖问题](#l4)
+5. x[实现动态加载内容的ListView](#l5)
+6. x[相机API的调用](#l6)
 7. [相册API的调用](#7)
 8. [时间, 位置, 天气 信息的获取](#8)
 9. [图片滤镜效果的添加](#9)
@@ -47,4 +47,54 @@ title: 安卓开发日志
    
 ### 分享内容到社交网络的接口
 
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
+- adfafasfasdfasdf
 
