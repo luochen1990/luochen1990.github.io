@@ -108,7 +108,7 @@ polyline = (mix) ->
 vec.polyline = (t_p...) ->
 	polyline(vec.mix)(t_p...)
 
-testpolyline = vec.polyline([0, [-1,-1]] , [1, [2,2]])
+#testpolyline = vec.polyline([0, [-1,-1]] , [1, [2,2]])
 #err testpolyline(1)
 
 animate = (draw , clear , status , duration , fps = 50) ->
