@@ -56,15 +56,26 @@ computer2_gen = () ->
 			success_cnt[user_input] += 1
 		user_input == ans
 
-$(document).on 'game-started', (ev, game_id, game_round) ->
-	$('body').append('''<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+$(document).on 'game-started', (ev, game_type, game_id, game_round) ->
+	$('body').append("""<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
 		<circle id="left-cicle" cx="30%" cy="50%" r="20%" stroke="white" stroke-width="1" fill="blue" />
 		<circle id="right-cicle" cx="70%" cy="50%" r="20%" stroke="white" stroke-width="1" fill="blue" />
-	</svg>''')
+	</svg>""")
 	computer = eval("computer#{game_id}_gen()")
 	result = []
 	accept_input = true
 	round_start_time = new Date().getTime()
+	log game_type
+	log game_id
+	log game_round
+	if game_type == 1
+		log 'aaaaaa'
+		if Math.random() < 0.5
+			$('#left-cicle').attr('fill', 'yellow')
+			log 'bbbbbbbbbb'
+		else
+			$('#right-cicle').attr('fill', 'yellow')
+			log 'ccccccccccc'
 
 	after_got_user_input = (user_input) ->
 		if accept_input
@@ -86,6 +97,13 @@ $(document).on 'game-started', (ev, game_id, game_round) ->
 				$(['#left-cicle', '#right-cicle'][user_input]).attr('fill', 'blue')
 				accept_input = true
 				round_start_time = new Date().getTime()
+				if game_type == 1
+					if Math.random() < 0.5
+						$('#left-cicle').attr('fill', 'yellow')
+						$('#right-cicle').attr('fill', 'blue')
+					else
+						$('#left-cicle').attr('fill', 'blue')
+						$('#right-cicle').attr('fill', 'yellow')
 			), WAITING_SECONDS * 1000)
 
 	on_cicle_click = (ev) ->
@@ -135,10 +153,11 @@ $(document).on 'game-finished', (ev, result) ->
 $(document).ready () ->
 	log 'hello'
 	$('body').append('''<div>
+	<input type="number" id="game_type" min="0" max="1" value="0" placeholder="game type" />
 	<input type="number" id="game_id" min="0" max="2" value="0" placeholder="game id" />
 	<input type="number" id="game_round" min="1" max="1000000" value="4" placeholder="game round" />
 	<input type="submit" id="start-game" value="开始游戏" />
 	</div>''')
 	$('#start-game').on 'click', (ev) ->
-		$(document).trigger('game-started', [Number($('#game_id').val()), Number($('#game_round').val())])
+		$(document).trigger('game-started', [Number($('#game_type').val()), Number($('#game_id').val()), Number($('#game_round').val())])
 

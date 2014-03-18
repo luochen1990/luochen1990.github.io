@@ -50,13 +50,26 @@
     };
   };
 
-  $(document).on('game-started', function(ev, game_id, game_round) {
+  $(document).on('game-started', function(ev, game_type, game_id, game_round) {
     var accept_input, after_got_user_input, computer, id, on_cicle_click, on_keydown, result, round_start_time, _i, _len, _ref, _results;
-    $('body').append('<svg xmlns="http://www.w3.org/2000/svg" version="1.1">\n	<circle id="left-cicle" cx="30%" cy="50%" r="20%" stroke="white" stroke-width="1" fill="blue" />\n	<circle id="right-cicle" cx="70%" cy="50%" r="20%" stroke="white" stroke-width="1" fill="blue" />\n</svg>');
+    $('body').append("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n	<circle id=\"left-cicle\" cx=\"30%\" cy=\"50%\" r=\"20%\" stroke=\"white\" stroke-width=\"1\" fill=\"blue\" />\n	<circle id=\"right-cicle\" cx=\"70%\" cy=\"50%\" r=\"20%\" stroke=\"white\" stroke-width=\"1\" fill=\"blue\" />\n</svg>");
     computer = eval("computer" + game_id + "_gen()");
     result = [];
     accept_input = true;
     round_start_time = new Date().getTime();
+    log(game_type);
+    log(game_id);
+    log(game_round);
+    if (game_type === 1) {
+      log('aaaaaa');
+      if (Math.random() < 0.5) {
+        $('#left-cicle').attr('fill', 'yellow');
+        log('bbbbbbbbbb');
+      } else {
+        $('#right-cicle').attr('fill', 'yellow');
+        log('ccccccccccc');
+      }
+    }
     after_got_user_input = function(user_input) {
       var feedback;
       if (accept_input) {
@@ -77,7 +90,16 @@
         return setTimeout((function() {
           $(['#left-cicle', '#right-cicle'][user_input]).attr('fill', 'blue');
           accept_input = true;
-          return round_start_time = new Date().getTime();
+          round_start_time = new Date().getTime();
+          if (game_type === 1) {
+            if (Math.random() < 0.5) {
+              $('#left-cicle').attr('fill', 'yellow');
+              return $('#right-cicle').attr('fill', 'blue');
+            } else {
+              $('#left-cicle').attr('fill', 'blue');
+              return $('#right-cicle').attr('fill', 'yellow');
+            }
+          }
         }), WAITING_SECONDS * 1000);
       }
     };
@@ -175,9 +197,9 @@
 
   $(document).ready(function() {
     log('hello');
-    $('body').append('<div>\n<input type="number" id="game_id" min="0" max="2" value="0" placeholder="game id" />\n<input type="number" id="game_round" min="1" max="1000000" value="4" placeholder="game round" />\n<input type="submit" id="start-game" value="开始游戏" />\n</div>');
+    $('body').append('<div>\n<input type="number" id="game_type" min="0" max="1" value="0" placeholder="game type" />\n<input type="number" id="game_id" min="0" max="2" value="0" placeholder="game id" />\n<input type="number" id="game_round" min="1" max="1000000" value="4" placeholder="game round" />\n<input type="submit" id="start-game" value="开始游戏" />\n</div>');
     return $('#start-game').on('click', function(ev) {
-      return $(document).trigger('game-started', [Number($('#game_id').val()), Number($('#game_round').val())]);
+      return $(document).trigger('game-started', [Number($('#game_type').val()), Number($('#game_id').val()), Number($('#game_round').val())]);
     });
   });
 
