@@ -32,54 +32,87 @@ err = (it) -> alert(JSON.stringify(it))
 #		wait_for_click_event
 #		user_input
 
-computer0_gen = () ->
-	(user_input) ->
-		ans = if Math.random() < 0.5 then 0 else 1
-		user_input == ans
+computer_gen = (computer_type) ->
+	computer0_gen = () ->
+		(user_input) ->
+			ans = if Math.random() < 0.5 then 0 else 1
+			user_input == ans
 
-computer1_gen = () ->
-	choice_cnt = [0, 0]
-	(user_input) ->
-		ans = if Math.random() < 0.5 then 0 else 1
-		choice_cnt[user_input] += 1
-		if Math.abs(choice_cnt[0] - choice_cnt[1]) >= 2
-			ans = if choice_cnt[0] < choice_cnt[1] then 0 else 1
-		user_input == ans
+	computer1_gen = () ->
+		choice_cnt = [0, 0]
+		(user_input) ->
+			ans = if Math.random() < 0.5 then 0 else 1
+			choice_cnt[user_input] += 1
+			if Math.abs(choice_cnt[0] - choice_cnt[1]) >= 2
+				ans = if choice_cnt[0] < choice_cnt[1] then 0 else 1
+			user_input == ans
 
-computer2_gen = () ->
-	success_cnt = [0, 0]
-	(user_input) ->
-		ans = if Math.random() < 0.5 then 0 else 1
-		if Math.abs(success_cnt[0] - success_cnt[1]) >= 1
-			ans = if success_cnt[0] < success_cnt[1] then 0 else 1
-		if user_input == ans
-			success_cnt[user_input] += 1
-		user_input == ans
+	computer2_gen = () ->
+		success_cnt = [0, 0]
+		(user_input) ->
+			ans = if Math.random() < 0.5 then 0 else 1
+			if Math.abs(success_cnt[0] - success_cnt[1]) >= 1
+				ans = if success_cnt[0] < success_cnt[1] then 0 else 1
+			if user_input == ans
+				success_cnt[user_input] += 1
+			user_input == ans
 
-$(document).on 'game-started', (ev, game_type, game_id, game_round) ->
-	$('body').append("""<svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-		<circle id="left-cicle" cx="30%" cy="50%" r="20%" stroke="white" stroke-width="1" fill="blue" />
-		<circle id="right-cicle" cx="70%" cy="50%" r="20%" stroke="white" stroke-width="1" fill="blue" />
-	</svg>""")
-	computer = eval("computer#{game_id}_gen()")
+	eval("computer#{computer_type}_gen()")
+
+
+disturbance_gen = (disturbance_type) ->
+	disturbance1_gen = () ->
+		(user_input) ->
+			if Math.random() < 0.5 then 0 else 1 #干扰项(黄色圆)随机出现
+
+	disturbance2_gen = () ->
+		choice_cnt = [0, 0]
+		(user_input) ->
+			ans = if Math.random() < 0.5 then 0 else 1
+			choice_cnt[user_input] += 1
+			if Math.abs(choice_cnt[0] - choice_cnt[1]) >= 1
+				ans = if choice_cnt[0] > choice_cnt[1] then 0 else 1 #干扰项出现在用户偏好的一方
+			ans
+
+	disturbance3_gen = () ->
+		choice_cnt = [0, 0]
+		(user_input) ->
+			ans = if Math.random() < 0.5 then 0 else 1
+			choice_cnt[user_input] += 1
+			if Math.abs(choice_cnt[0] - choice_cnt[1]) >= 1
+				ans = if choice_cnt[0] < choice_cnt[1] then 0 else 1 #干扰项出现在用户不偏好的一方
+			ans
+
+	eval("disturbance#{disturbance_type}_gen()")
+
+##################################################################
+
+$(document).on 'game-started', (ev, disturbance_type, computer_type, game_round) ->
+	$('#game-finished-div').remove()
+	$('#game-started-div').remove()
+	$('body').append("""<div id='game-started-div'>
+	<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>
+		<circle id='left-cicle' cx='30%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />
+		<circle id='right-cicle' cx='70%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />
+	</svg>
+	<div><span>分数</span><label id='score'>0</label></div>
+	</div>""")
+	computer = computer_gen(computer_type)
+	if disturbance_type > 0
+		disturbance = disturbance_gen(disturbance_type)
 	result = []
 	accept_input = true
 	round_start_time = new Date().getTime()
-	log game_type
-	log game_id
+	log disturbance_type
+	log computer_type
 	log game_round
-	if game_type == 1
-		log 'aaaaaa'
-		if Math.random() < 0.5
-			$('#left-cicle').attr('fill', 'yellow')
-			log 'bbbbbbbbbb'
-		else
-			$('#right-cicle').attr('fill', 'yellow')
-			log 'ccccccccccc'
+	if disturbance_type > 0
+		$(['#left-cicle', '#right-cicle'][if Math.random() < 0.5 then 0 else 1]).attr('fill', 'yellow')
 
 	after_got_user_input = (user_input) ->
 		if accept_input
 			feedback = computer(user_input)
+			$('#score').text(Number($('#score').text()) + feedback)
 			log user_input
 			log feedback
 			result.push({
@@ -94,16 +127,12 @@ $(document).on 'game-started', (ev, game_type, game_id, game_round) ->
 			$(['#left-cicle', '#right-cicle'][user_input]).attr('fill', if feedback then 'green' else 'red')
 			accept_input = false
 			setTimeout((() ->
-				$(['#left-cicle', '#right-cicle'][user_input]).attr('fill', 'blue')
+				$('#left-cicle').attr('fill', 'blue')
+				$('#right-cicle').attr('fill', 'blue')
 				accept_input = true
 				round_start_time = new Date().getTime()
-				if game_type == 1
-					if Math.random() < 0.5
-						$('#left-cicle').attr('fill', 'yellow')
-						$('#right-cicle').attr('fill', 'blue')
-					else
-						$('#left-cicle').attr('fill', 'blue')
-						$('#right-cicle').attr('fill', 'yellow')
+				if disturbance_type > 0
+					$(['#left-cicle', '#right-cicle'][disturbance(user_input)]).attr('fill', 'yellow')
 			), WAITING_SECONDS * 1000)
 
 	on_cicle_click = (ev) ->
@@ -131,11 +160,14 @@ $(document).on 'game-finished', (ev, result) ->
 	result_analysis = (result) ->
 		cc = [0, 0]
 		fc = [0, 0]
+		score = 0
 		for i in [0...result.length]
 			r = result[i]
 			cc[r.answer] += 1
 			if i > 0 and r.answer == result[i - 1].answer ^ result[i - 1].same
 				fc[r.answer] += 1
+			score += r.same
+			result[i].score = score
 			result[i].left_choice_ratio = cc[0] / (i + 1)
 			result[i].right_choice_ratio = cc[1] / (i + 1)
 			result[i].left_follow_ratio = fc[0] / (i + 1)
@@ -144,20 +176,21 @@ $(document).on 'game-finished', (ev, result) ->
 
 	download_href = csv2href json2csv result_analysis result
 
-	$('svg').remove()
-	$('div').remove()
-	$('body').append("<a id='download-result' download='result.csv' href='#{download_href}'>[保存实验记录]</a>")
-	$('body').append(json2table result_analysis result)
+	$('#game-started-div').remove()
+	$('body').append("""<div id='game-finished-div'>
+	<a id='download-result' download='result.csv' href='#{download_href}'>[保存实验记录]</a>
+	#{json2table result_analysis result}
+	</div>""")
 
 
 $(document).ready () ->
 	log 'hello'
-	$('body').append('''<div>
-	<input type="number" id="game_type" min="0" max="1" value="0" placeholder="game type" />
-	<input type="number" id="game_id" min="0" max="2" value="0" placeholder="game id" />
-	<input type="number" id="game_round" min="1" max="1000000" value="4" placeholder="game round" />
-	<input type="submit" id="start-game" value="开始游戏" />
-	</div>''')
+	$('body').append("""<div id='game-select-div'>
+	<input type='number' style='width:100px' id='disturbance_type' min='0' max='3' value='' placeholder='干扰算法ID' />
+	<input type='number' style='width:100px' id='computer_type' min='0' max='2' value='' placeholder='机器算法ID' />
+	<input type='number' style='width:100px' id='game_round' min='1' max='1000000' value='' placeholder='游戏轮数' />
+	<input type='submit' style='width:100px' id='start-game' value='开始游戏' />
+	</div>""")
 	$('#start-game').on 'click', (ev) ->
-		$(document).trigger('game-started', [Number($('#game_type').val()), Number($('#game_id').val()), Number($('#game_round').val())])
+		$(document).trigger('game-started', [Number($('#disturbance_type').val()), Number($('#computer_type').val()), Number($('#game_round').val())])
 
