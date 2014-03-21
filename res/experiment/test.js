@@ -166,7 +166,16 @@
     var csv2href, download_href, json2csv, json2table, result_analysis;
     json2table = function(json) {
       var k, row, v;
-      return "<table class='table table-striped'><tr><td>" + (((function() {
+      return "<table class='table table-striped'>\n<tr><th>" + (((function() {
+        var _ref, _results;
+        _ref = result[0];
+        _results = [];
+        for (k in _ref) {
+          v = _ref[k];
+          _results.push(k);
+        }
+        return _results;
+      })()).join('</th><th>')) + "</th></tr>\n<tr><td>" + (((function() {
         var _i, _len, _results;
         _results = [];
         for (_i = 0, _len = result.length; _i < _len; _i++) {
@@ -182,11 +191,20 @@
           })()).join('</td><td>'));
         }
         return _results;
-      })()).join('</td></tr><tr><td>')) + "</td></tr></table>";
+      })()).join('</td></tr><tr><td>')) + "</td></tr>\n</table>";
     };
     json2csv = function(json) {
       var k, row, v;
       return ((function() {
+        var _ref, _results;
+        _ref = result[0];
+        _results = [];
+        for (k in _ref) {
+          v = _ref[k];
+          _results.push(k);
+        }
+        return _results;
+      })()).join(',') + '\n' + ((function() {
         var _i, _len, _results;
         _results = [];
         for (_i = 0, _len = result.length; _i < _len; _i++) {
@@ -208,9 +226,10 @@
       return "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
     };
     result_analysis = function(result) {
-      var cc, fc, i, r, score, _i, _ref;
+      var cc, fc, i, r, sc, score, _i, _ref;
       cc = [0, 0];
       fc = [0, 0];
+      sc = [0, 0];
       score = 0;
       for (i = _i = 0, _ref = result.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         r = result[i];
@@ -218,12 +237,17 @@
         if (i > 0 && r.answer === result[i - 1].answer ^ result[i - 1].same) {
           fc[r.answer] += 1;
         }
+        if (r.same) {
+          sc[r.answer] += 1;
+        }
         score += r.same;
         result[i].score = score;
         result[i].left_choice_ratio = cc[0] / (i + 1);
         result[i].right_choice_ratio = cc[1] / (i + 1);
         result[i].left_follow_ratio = fc[0] / (i + 1);
         result[i].right_follow_ratio = fc[1] / (i + 1);
+        result[i].left_success_ratio = sc[0] / (i + 1);
+        result[i].right_success_ratio = sc[1] / (i + 1);
       }
       return result;
     };

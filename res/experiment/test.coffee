@@ -149,10 +149,13 @@ $(document).on 'game-started', (ev, disturbance_type, computer_type, game_round)
 
 $(document).on 'game-finished', (ev, result) ->
 	json2table = (json) ->
-		"<table class='table table-striped'><tr><td>#{((v for k, v of row).join('</td><td>') for row in result).join('</td></tr><tr><td>')}</td></tr></table>"
+		"""<table class='table table-striped'>
+		<tr><th>#{(k for k, v of result[0]).join('</th><th>')}</th></tr>
+		<tr><td>#{((v for k, v of row).join('</td><td>') for row in result).join('</td></tr><tr><td>')}</td></tr>
+		</table>"""
 
 	json2csv = (json) ->
-		((v for k, v of row).join(',') for row in result).join('\n')
+		(k for k, v of result[0]).join(',') + '\n' + ((v for k, v of row).join(',') for row in result).join('\n')
 
 	csv2href = (csv) ->
 		"data:text/csv;charset=utf-8," + encodeURIComponent(csv)
@@ -160,18 +163,21 @@ $(document).on 'game-finished', (ev, result) ->
 	result_analysis = (result) ->
 		cc = [0, 0]
 		fc = [0, 0]
+		sc = [0, 0]
 		score = 0
 		for i in [0...result.length]
 			r = result[i]
 			cc[r.answer] += 1
-			if i > 0 and r.answer == result[i - 1].answer ^ result[i - 1].same
-				fc[r.answer] += 1
+			fc[r.answer] += 1 if i > 0 and r.answer == result[i - 1].answer ^ result[i - 1].same
+			sc[r.answer] += 1 if r.same
 			score += r.same
 			result[i].score = score
 			result[i].left_choice_ratio = cc[0] / (i + 1)
 			result[i].right_choice_ratio = cc[1] / (i + 1)
 			result[i].left_follow_ratio = fc[0] / (i + 1)
 			result[i].right_follow_ratio = fc[1] / (i + 1)
+			result[i].left_success_ratio = sc[0] / (i + 1)
+			result[i].right_success_ratio = sc[1] / (i + 1)
 		result
 
 	download_href = csv2href json2csv result_analysis result
