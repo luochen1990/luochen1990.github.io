@@ -90,12 +90,12 @@ disturbance_gen = (disturbance_type) ->
 $(document).on 'game-started', (ev, disturbance_type, computer_type, game_round) ->
 	$('#game-finished-div').remove()
 	$('#game-started-div').remove()
-	$('body').append("""<div id='game-started-div'>
+	$('#main-frame').append("""<div id='game-started-div'>
+	<div id='score-div' class='row'></span><span class='col-xs-2' style='font-size:20pt'>SCORE:</span><span id='score' class='col-xs-2' style='font-size:20pt'>0</span></div>
 	<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>
 		<circle id='left-cicle' cx='30%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />
 		<circle id='right-cicle' cx='70%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />
 	</svg>
-	<div><span>分数</span><label id='score'>0</label></div>
 	</div>""")
 	computer = computer_gen(computer_type)
 	if disturbance_type > 0
@@ -103,22 +103,25 @@ $(document).on 'game-started', (ev, disturbance_type, computer_type, game_round)
 	result = []
 	accept_input = true
 	round_start_time = new Date().getTime()
+	disturb = null
 	log disturbance_type
 	log computer_type
 	log game_round
 	if disturbance_type > 0
-		$(['#left-cicle', '#right-cicle'][if Math.random() < 0.5 then 0 else 1]).attr('fill', 'yellow')
+		disturb = if Math.random() < 0.5 then 0 else 1
+		$(['#left-cicle', '#right-cicle'][disturb]).attr('fill', 'yellow')
 
 	after_got_user_input = (user_input) ->
 		if accept_input
 			feedback = computer(user_input)
-			$('#score').text(Number($('#score').text()) + feedback)
+			$('#score').text(Number($('#score').text()) + (feedback - not feedback))
 			log user_input
 			log feedback
 			result.push({
 				time: new Date().getTime() - round_start_time
 				answer: user_input
 				same: feedback
+				disturb: disturb
 			})
 			log result
 			if result.length == game_round
@@ -132,7 +135,8 @@ $(document).on 'game-started', (ev, disturbance_type, computer_type, game_round)
 				accept_input = true
 				round_start_time = new Date().getTime()
 				if disturbance_type > 0
-					$(['#left-cicle', '#right-cicle'][disturbance(user_input)]).attr('fill', 'yellow')
+					disturb = disturbance(user_input)
+					$(['#left-cicle', '#right-cicle'][disturb]).attr('fill', 'yellow')
 			), WAITING_SECONDS * 1000)
 
 	on_cicle_click = (ev) ->
@@ -164,13 +168,15 @@ $(document).on 'game-finished', (ev, result) ->
 		cc = [0, 0]
 		fc = [0, 0]
 		sc = [0, 0]
+		dc = 0
 		score = 0
 		for i in [0...result.length]
 			r = result[i]
 			cc[r.answer] += 1
 			fc[r.answer] += 1 if i > 0 and r.answer == result[i - 1].answer ^ result[i - 1].same
 			sc[r.answer] += 1 if r.same
-			score += r.same
+			dc += r.answer == r.disturb
+			score += (r.same - not r.same)
 			result[i].score = score
 			result[i].left_choice_ratio = cc[0] / (i + 1)
 			result[i].right_choice_ratio = cc[1] / (i + 1)
@@ -178,20 +184,22 @@ $(document).on 'game-finished', (ev, result) ->
 			result[i].right_follow_ratio = fc[1] / (i + 1)
 			result[i].left_success_ratio = sc[0] / (i + 1)
 			result[i].right_success_ratio = sc[1] / (i + 1)
+			result[i].disturb_choosed_ratio = dc / (i + 1)
 		result
 
 	download_href = csv2href json2csv result_analysis result
 
 	$('#game-started-div').remove()
-	$('body').append("""<div id='game-finished-div'>
-	<a id='download-result' download='result.csv' href='#{download_href}'>[保存实验记录]</a>
-	#{json2table result_analysis result}
+	$('#main-frame').append("""<div id='game-finished-div'>
+		<a id='download-result' download='result.csv' href='#{download_href}'>[保存实验记录]</a>
+		#{json2table result_analysis result}
 	</div>""")
 
 
 $(document).ready () ->
 	log 'hello'
-	$('body').append("""<div id='game-select-div'>
+	$('#main-frame').addClass('container')
+	$('#main-frame').append("""<div id='game-select-div'>
 	<input type='number' style='width:100px' id='disturbance_type' min='0' max='3' value='' placeholder='干扰算法ID' />
 	<input type='number' style='width:100px' id='computer_type' min='0' max='2' value='' placeholder='机器算法ID' />
 	<input type='number' style='width:100px' id='game_round' min='1' max='1000000' value='' placeholder='游戏轮数' />

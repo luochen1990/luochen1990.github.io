@@ -93,10 +93,10 @@
   };
 
   $(document).on('game-started', function(ev, disturbance_type, computer_type, game_round) {
-    var accept_input, after_got_user_input, computer, disturbance, id, on_cicle_click, on_keydown, result, round_start_time, _i, _len, _ref, _results;
+    var accept_input, after_got_user_input, computer, disturb, disturbance, id, on_cicle_click, on_keydown, result, round_start_time, _i, _len, _ref, _results;
     $('#game-finished-div').remove();
     $('#game-started-div').remove();
-    $('body').append("<div id='game-started-div'>\n<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>\n	<circle id='left-cicle' cx='30%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />\n	<circle id='right-cicle' cx='70%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />\n</svg>\n<div><span>分数</span><label id='score'>0</label></div>\n</div>");
+    $('#main-frame').append("<div id='game-started-div'>\n<div id='score-div' class='row'></span><span class='col-xs-2' style='font-size:20pt'>SCORE:</span><span id='score' class='col-xs-2' style='font-size:20pt'>0</span></div>\n<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>\n	<circle id='left-cicle' cx='30%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />\n	<circle id='right-cicle' cx='70%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />\n</svg>\n</div>");
     computer = computer_gen(computer_type);
     if (disturbance_type > 0) {
       disturbance = disturbance_gen(disturbance_type);
@@ -104,23 +104,26 @@
     result = [];
     accept_input = true;
     round_start_time = new Date().getTime();
+    disturb = null;
     log(disturbance_type);
     log(computer_type);
     log(game_round);
     if (disturbance_type > 0) {
-      $(['#left-cicle', '#right-cicle'][Math.random() < 0.5 ? 0 : 1]).attr('fill', 'yellow');
+      disturb = Math.random() < 0.5 ? 0 : 1;
+      $(['#left-cicle', '#right-cicle'][disturb]).attr('fill', 'yellow');
     }
     after_got_user_input = function(user_input) {
       var feedback;
       if (accept_input) {
         feedback = computer(user_input);
-        $('#score').text(Number($('#score').text()) + feedback);
+        $('#score').text(Number($('#score').text()) + (feedback - !feedback));
         log(user_input);
         log(feedback);
         result.push({
           time: new Date().getTime() - round_start_time,
           answer: user_input,
-          same: feedback
+          same: feedback,
+          disturb: disturb
         });
         log(result);
         if (result.length === game_round) {
@@ -134,7 +137,8 @@
           accept_input = true;
           round_start_time = new Date().getTime();
           if (disturbance_type > 0) {
-            return $(['#left-cicle', '#right-cicle'][disturbance(user_input)]).attr('fill', 'yellow');
+            disturb = disturbance(user_input);
+            return $(['#left-cicle', '#right-cicle'][disturb]).attr('fill', 'yellow');
           }
         }), WAITING_SECONDS * 1000);
       }
@@ -226,10 +230,11 @@
       return "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
     };
     result_analysis = function(result) {
-      var cc, fc, i, r, sc, score, _i, _ref;
+      var cc, dc, fc, i, r, sc, score, _i, _ref;
       cc = [0, 0];
       fc = [0, 0];
       sc = [0, 0];
+      dc = 0;
       score = 0;
       for (i = _i = 0, _ref = result.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
         r = result[i];
@@ -240,7 +245,8 @@
         if (r.same) {
           sc[r.answer] += 1;
         }
-        score += r.same;
+        dc += r.answer === r.disturb;
+        score += r.same - !r.same;
         result[i].score = score;
         result[i].left_choice_ratio = cc[0] / (i + 1);
         result[i].right_choice_ratio = cc[1] / (i + 1);
@@ -248,17 +254,19 @@
         result[i].right_follow_ratio = fc[1] / (i + 1);
         result[i].left_success_ratio = sc[0] / (i + 1);
         result[i].right_success_ratio = sc[1] / (i + 1);
+        result[i].disturb_choosed_ratio = dc / (i + 1);
       }
       return result;
     };
     download_href = csv2href(json2csv(result_analysis(result)));
     $('#game-started-div').remove();
-    return $('body').append("<div id='game-finished-div'>\n<a id='download-result' download='result.csv' href='" + download_href + "'>[保存实验记录]</a>\n" + (json2table(result_analysis(result))) + "\n</div>");
+    return $('#main-frame').append("<div id='game-finished-div'>\n	<a id='download-result' download='result.csv' href='" + download_href + "'>[保存实验记录]</a>\n	" + (json2table(result_analysis(result))) + "\n</div>");
   });
 
   $(document).ready(function() {
     log('hello');
-    $('body').append("<div id='game-select-div'>\n<input type='number' style='width:100px' id='disturbance_type' min='0' max='3' value='' placeholder='干扰算法ID' />\n<input type='number' style='width:100px' id='computer_type' min='0' max='2' value='' placeholder='机器算法ID' />\n<input type='number' style='width:100px' id='game_round' min='1' max='1000000' value='' placeholder='游戏轮数' />\n<input type='submit' style='width:100px' id='start-game' value='开始游戏' />\n</div>");
+    $('#main-frame').addClass('container');
+    $('#main-frame').append("<div id='game-select-div'>\n<input type='number' style='width:100px' id='disturbance_type' min='0' max='3' value='' placeholder='干扰算法ID' />\n<input type='number' style='width:100px' id='computer_type' min='0' max='2' value='' placeholder='机器算法ID' />\n<input type='number' style='width:100px' id='game_round' min='1' max='1000000' value='' placeholder='游戏轮数' />\n<input type='submit' style='width:100px' id='start-game' value='开始游戏' />\n</div>");
     return $('#start-game').on('click', function(ev) {
       return $(document).trigger('game-started', [Number($('#disturbance_type').val()), Number($('#computer_type').val()), Number($('#game_round').val())]);
     });
