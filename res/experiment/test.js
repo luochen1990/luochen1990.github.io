@@ -96,7 +96,7 @@
     var accept_input, after_got_user_input, computer, disturb, disturbance, id, on_cicle_click, on_keydown, result, round_start_time, _i, _len, _ref, _results;
     $('#game-finished-div').remove();
     $('#game-started-div').remove();
-    $('#main-frame').append("<div id='game-started-div'>\n<div id='score-div' class='row'></span><span class='col-xs-2' style='font-size:20pt'>SCORE:</span><span id='score' class='col-xs-2' style='font-size:20pt'>0</span></div>\n<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>\n	<circle id='left-cicle' cx='30%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />\n	<circle id='right-cicle' cx='70%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />\n</svg>\n</div>");
+    $('#main-frame').append("<div id='game-started-div'>\n<audio id='error-sound' src='error.wav' preload>AUDIO NOT SUPPORTED BY YOUR BROSWER</audio>\n<div id='score-div' class='row'></span><span class='col-xs-2' style='font-size:20pt'>SCORE:</span><span id='score' class='col-xs-2' style='font-size:20pt'>0</span></div>\n<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>\n	<circle id='left-cicle' cx='30%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />\n	<circle id='right-cicle' cx='70%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />\n</svg>\n</div>");
     computer = computer_gen(computer_type);
     if (disturbance_type > 0) {
       disturbance = disturbance_gen(disturbance_type);
@@ -129,8 +129,11 @@
         if (result.length === game_round) {
           $(document).trigger('game-finished', [result]);
         }
-        $(['#left-cicle', '#right-cicle'][user_input]).attr('fill', feedback ? 'green' : 'red');
         accept_input = false;
+        $(['#left-cicle', '#right-cicle'][user_input]).attr('fill', feedback ? 'green' : 'red');
+        if (!feedback) {
+          $('#error-sound')[0].play();
+        }
         return setTimeout((function() {
           $('#left-cicle').attr('fill', 'blue');
           $('#right-cicle').attr('fill', 'blue');
