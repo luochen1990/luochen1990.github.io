@@ -91,7 +91,6 @@ $(document).on 'game-started', (ev, disturbance_type, computer_type, game_round)
 	$('#game-finished-div').remove()
 	$('#game-started-div').remove()
 	$('#main-frame').append("""<div id='game-started-div'>
-	<audio id='error-sound' src='error.wav' preload>AUDIO NOT SUPPORTED BY YOUR BROSWER</audio>
 	<div id='score-div' class='row'></span><span class='col-xs-2' style='font-size:20pt'>SCORE:</span><span id='score' class='col-xs-2' style='font-size:20pt'>0</span></div>
 	<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>
 		<circle id='left-cicle' cx='30%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />
@@ -207,7 +206,9 @@ $(document).ready () ->
 	<input type='number' style='width:100px' id='computer_type' min='0' max='2' value='' placeholder='机器算法ID' />
 	<input type='number' style='width:100px' id='game_round' min='1' max='1000000' value='' placeholder='游戏轮数' />
 	<input type='submit' style='width:100px' id='start-game' value='开始游戏' />
-	</div>""")
+	</div>
+	<audio id='error-sound' src='error.wav' preload>AUDIO NOT SUPPORTED BY YOUR BROSWER</audio>
+	""")
 	$('#start-game').on 'click', (ev) ->
 		$(document).trigger('game-started', [Number($('#disturbance_type').val()), Number($('#computer_type').val()), Number($('#game_round').val())])
 
