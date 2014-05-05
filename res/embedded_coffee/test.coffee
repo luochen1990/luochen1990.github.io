@@ -171,6 +171,7 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 						last_line = lines[lines.length - 1]
 						#log last_line
 						indent = count_indent(last_line, tab)
+						indent += 1 if /(^\s*(for|while|until|if|unless) )|((\(|\[|\{|[-=]>)$)/.test last_line
 						#log indent
 						inserted = '\n' + tab.repeat(indent)
 						#log inserted

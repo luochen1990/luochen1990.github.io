@@ -274,6 +274,9 @@
               lines = before.split('\n');
               last_line = lines[lines.length - 1];
               indent = count_indent(last_line, tab);
+              if (/(^\s*(for|while|until|if|unless) )|((\(|\[|\{|[-=]>)$)/.test(last_line)) {
+                indent += 1;
+              }
               inserted = '\n' + tab.repeat(indent);
               this.value = before + inserted + after;
               return this.selectionStart = this.selectionEnd = start + inserted.length;
