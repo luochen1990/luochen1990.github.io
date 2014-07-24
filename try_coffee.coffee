@@ -1,10 +1,15 @@
 init_coffee_editor = (coffee_code_div, js_code_div) ->
+	$(coffee_code_div).css('tab-size': '4', '-moz-tab-size': '4', '-o-tab-size': '4')
 	_js_code = ''
 	_compile = () ->
 		_js_code = CoffeeScript.compile($(coffee_code_div).val(), {bare: true})
 		$(js_code_div).val(_js_code) if js_code_div
 	_eval = () ->
 		eval(_js_code)
+
+	$(coffee_code_div).on 'run', ->
+		_compile()
+		_eval()
 
 	count_indent = (line, tab) ->
 		c = 0
@@ -17,7 +22,8 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 				break
 		c
 
-	tab = ' '.repeat(4)
+	#tab = ' '.repeat(4)
+	tab = '\t'
 
 	$(coffee_code_div).on 'keydown', (e) ->
 		#log json [e.keyCode, e.shiftKey]
@@ -68,9 +74,8 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 					this.value = before + after
 					this.selectionStart = this.selectionEnd = start
 			if e.keyCode == 13 #enter
-				if e.shiftKey
-					_compile()
-					_eval()
+				if e.shiftKey or e.ctrlKey
+					$(coffee_code_div).trigger 'run'
 				else
 					if before.length == 0
 						#log 'aaaa'
@@ -88,8 +93,11 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 						this.value = before + inserted + after
 						this.selectionStart = this.selectionEnd = start + inserted.length
 
-	coffee_code: () ->
-		$(coffee_code_div).val()
+	coffee_code: (s) ->
+		if s?
+			$(coffee_code_div).val(s)
+		else
+			$(coffee_code_div).val()
 	js_code: () ->
 		_compile()
 		_js_code
@@ -99,9 +107,38 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 
 ##################################################################
 
+storage =
+	read: -> obj(localStorage.data ? '{}')
+	write: (data) -> localStorage.data = json(data)
+
 $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
 
-	$('#run-button').on 'click', ->
+	args = uri_decode(location.search, obj)
+	data = extend(args, storage.read(), libs: [], code: '')
+	log -> data.libs
+	log -> '\n' + data.code
+	storage.write(data)
+	for url in data.libs
+		$.getScript(url)
+	editor.coffee_code(data.code)
+
+	$('#code-block').on 'run', ->
+		data.code = editor.coffee_code()
+		storage.write(data)
 		editor.run()
+
+	$('#run-button').on 'click', ->
+		$('#code-block').trigger 'run'
+
+	$('#load-lib-button').on 'click', ->
+		url = $('#lib-to-load').val()
+		data.libs = data.libs.concat [url]
+		storage.write(data)
+		$.getScript(url)
+
+	$('#get-url').on 'click', ->
+		data.code = editor.coffee_code()
+		storage.write(data)
+		location.search = uri_encode(data, json)
 

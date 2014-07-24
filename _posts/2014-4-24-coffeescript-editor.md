@@ -8,6 +8,5 @@ layout: default
 
 - [测试页面][h1]
 
-
-[h1]: {{ site.res }}/embedded_coffee/test.html
+[h1]: {{ site }}/try_coffee.html
 
