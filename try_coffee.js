@@ -124,10 +124,6 @@
       js_code: function() {
         _compile();
         return _js_code;
-      },
-      run: function() {
-        _compile();
-        return _eval();
       }
     };
   };
@@ -165,8 +161,7 @@
     editor.coffee_code(data.code);
     $('#code-block').on('run', function() {
       data.code = editor.coffee_code();
-      storage.write(data);
-      return editor.run();
+      return storage.write(data);
     });
     $('#run-button').on('click', function() {
       return $('#code-block').trigger('run');
@@ -186,4 +181,4 @@
 
 }).call(this);
 
-//# sourceMappingURL=test.map
+//# sourceMappingURL=try_coffee.map

@@ -101,9 +101,6 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 	js_code: () ->
 		_compile()
 		_js_code
-	run: () ->
-		_compile()
-		_eval()
 
 ##################################################################
 
@@ -126,7 +123,6 @@ $(document).ready ->
 	$('#code-block').on 'run', ->
 		data.code = editor.coffee_code()
 		storage.write(data)
-		editor.run()
 
 	$('#run-button').on 'click', ->
 		$('#code-block').trigger 'run'
