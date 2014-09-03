@@ -38,6 +38,8 @@ FindProxyForURL = do ->
 				'stackoverflow.com'
 				'wikipedia.org'
 				'googleapis.com'
+				'googlevideo.com'
+				'googlesyndication.com'
 				'gmail.com'
 				'mail.google.com'
 				'plus.google.com'
@@ -51,6 +53,8 @@ FindProxyForURL = do ->
 				#'maps.google.com'
 				'facebook.com'
 				'twitter.com'
+				'youtube.com'
+				'youtube-nocookie.com'
 				'atgfw.org'
 				'blogspot.com'
 			]
