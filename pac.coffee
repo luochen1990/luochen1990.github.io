@@ -57,7 +57,7 @@ FindProxyForURL = do ->
 				'youtube.com'
 				'youtube-nocookie.com'
 				'atgfw.org'
-				'blogspot.com'
+				'blogspot.*'
 			]
 
 	match = (url, domain) ->

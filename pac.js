@@ -20,7 +20,7 @@ FindProxyForURL = (function() {
     },
     blocked_by_gfw: {
       ways: 'shadowsocks direct',
-      list: ['angularjs.org', 'getpocket.com', 'dropbox.com', 'fastly.net', 'sf.net', 'sourceforge.net', 'sstatic.net', 'stackoverflow.com', 'wikipedia.org', 'googleapis.com', 'googlevideo.com', 'googlesyndication.com', 'gmail.com', 'mail.google.com', 'plus.google.com', 'googleusercontent.com', 'googlesyndication.com', 'google*.com', 'gstatic.com', 'facebook.com', 'twitter.com', 'youtube.com', 'youtube-nocookie.com', 'atgfw.org', 'blogspot.com']
+      list: ['angularjs.org', 'getpocket.com', 'dropbox.com', 'fastly.net', 'sf.net', 'sourceforge.net', 'sstatic.net', 'stackoverflow.com', 'wikipedia.org', 'googleapis.com', 'googlevideo.com', 'googlesyndication.com', 'gmail.com', 'mail.google.com', 'plus.google.com', 'googleusercontent.com', 'googlesyndication.com', 'google*.com', 'gstatic.com', 'facebook.com', 'twitter.com', 'youtube.com', 'youtube-nocookie.com', 'atgfw.org', 'blogspot.*']
     }
   };
   match = function(url, domain) {
