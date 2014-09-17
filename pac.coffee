@@ -45,7 +45,7 @@ FindProxyForURL = do ->
 				'plus.google.com'
 				'googleusercontent.com'
 				'googlesyndication.com'
-				'google*.com'
+				'google*.*'
 				'gstatic.com'
 				#'accounts.google.com'
 				#'chrome.google.com'
