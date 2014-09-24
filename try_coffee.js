@@ -139,10 +139,9 @@
   };
 
   $(document).ready(function() {
-    var args, data, editor, url, _i, _len, _ref;
+    var data, editor, url, _i, _len, _ref;
     editor = init_coffee_editor('#code-block', '#js-block');
-    args = uri_decode(location.search, obj);
-    data = extend(args, storage.read(), {
+    data = location.search.uri_decode(obj).extend(storage.read(), {
       libs: [],
       code: ''
     });
@@ -175,7 +174,7 @@
     return $('#get-url').on('click', function() {
       data.code = editor.coffee_code();
       storage.write(data);
-      return location.search = uri_encode(data, json);
+      return location.search = data.uri_encode(json);
     });
   });
 

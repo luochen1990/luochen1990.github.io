@@ -111,8 +111,7 @@ storage =
 $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
 
-	args = uri_decode(location.search, obj)
-	data = extend(args, storage.read(), libs: [], code: '')
+	data = location.search.uri_decode(obj).extend(storage.read(), libs: [], code: '')
 	log -> data.libs
 	log -> '\n' + data.code
 	storage.write(data)
@@ -136,5 +135,5 @@ $(document).ready ->
 	$('#get-url').on 'click', ->
 		data.code = editor.coffee_code()
 		storage.write(data)
-		location.search = uri_encode(data, json)
+		location.search = data.uri_encode(json)
 
