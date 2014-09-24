@@ -4,6 +4,7 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 	_compile = () ->
 		_js_code = CoffeeScript.compile($(coffee_code_div).val(), {bare: true})
 		$(js_code_div).val(_js_code) if js_code_div
+		return null
 	_eval = () ->
 		eval(_js_code)
 

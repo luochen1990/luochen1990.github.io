@@ -15,8 +15,9 @@
         bare: true
       });
       if (js_code_div) {
-        return $(js_code_div).val(_js_code);
+        $(js_code_div).val(_js_code);
       }
+      return null;
     };
     _eval = function() {
       return eval(_js_code);
