@@ -112,7 +112,7 @@ storage =
 $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
 
-	data = location.search.uri_decode(obj).extend(storage.read(), libs: [], code: '')
+	data = Object.extend(uri_decoder(obj)(location.search), storage.read(), libs: [], code: '')
 	log -> data.libs
 	log -> '\n' + data.code
 	storage.write(data)

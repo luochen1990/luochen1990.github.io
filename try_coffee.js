@@ -142,7 +142,7 @@
   $(document).ready(function() {
     var data, editor, url, _i, _len, _ref;
     editor = init_coffee_editor('#code-block', '#js-block');
-    data = location.search.uri_decode(obj).extend(storage.read(), {
+    data = Object.extend(uri_decoder(obj)(location.search), storage.read(), {
       libs: [],
       code: ''
     });
