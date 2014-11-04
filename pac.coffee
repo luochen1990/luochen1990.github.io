@@ -54,10 +54,12 @@ FindProxyForURL = do ->
 				#'maps.google.com'
 				'facebook.com'
 				'twitter.com'
+				'twimg.com'
 				'youtube.com'
 				'youtube-nocookie.com'
 				'atgfw.org'
 				'blogspot.*'
+				'wordpress.*'
 			]
 
 	match = (url, domain) ->
