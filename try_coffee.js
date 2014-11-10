@@ -23,7 +23,7 @@
       return eval(_js_code);
     };
     $(coffee_code_div).on('run', function() {
-      log.histories.shift(100);
+      log.histories.splice(0, Infinity);
       _compile();
       return _eval();
     });

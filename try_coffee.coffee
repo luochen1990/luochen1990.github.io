@@ -9,7 +9,7 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 		eval(_js_code)
 
 	$(coffee_code_div).on 'run', ->
-		log.histories.shift(100)
+		log.histories.splice(0, Infinity)
 		_compile()
 		_eval()
 
