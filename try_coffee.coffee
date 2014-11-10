@@ -9,6 +9,7 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 		eval(_js_code)
 
 	$(coffee_code_div).on 'run', ->
+		log.histories.shift(100)
 		_compile()
 		_eval()
 
@@ -106,15 +107,17 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 ##################################################################
 
 storage =
-	read: -> obj(localStorage.data ? '{}')
-	write: (data) -> localStorage.data = json(data)
+	read: -> ''
+	write: ->
+	#read: -> obj(localStorage.data ? '{}')
+	#write: (data) -> localStorage.data = json(data)
 
 $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
 
 	data = Object.extend(uri_decoder(obj)(location.search), storage.read(), libs: [], code: '')
-	log -> data.libs
-	log -> '\n' + data.code
+	console.log 'data.libs:', data.libs
+	#log -> '\n' + data.code
 	storage.write(data)
 	for url in data.libs
 		$.getScript(url)
@@ -123,6 +126,7 @@ $(document).ready ->
 	$('#code-block').on 'run', ->
 		data.code = editor.coffee_code()
 		storage.write(data)
+		$('#output-area').val(log.histories.map((xs) -> xs.join(' ')).join('\n'))
 
 	$('#run-button').on 'click', ->
 		$('#code-block').trigger 'run'
@@ -136,5 +140,5 @@ $(document).ready ->
 	$('#get-url').on 'click', ->
 		data.code = editor.coffee_code()
 		storage.write(data)
-		location.search = data.uri_encode(json)
+		location.search = uri_encoder(json)(data)
 

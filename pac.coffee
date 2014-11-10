@@ -24,6 +24,8 @@ FindProxyForURL = do ->
 				'taobao.com'
 				'appspot.com'
 				'360buy.com'
+				'hjav.org'
+				'yyv.co'
 			]
 		blocked_by_gfw:
 			ways: 'shadowsocks direct'
@@ -46,7 +48,7 @@ FindProxyForURL = do ->
 				'googleusercontent.com'
 				'googlesyndication.com'
 				'google*.*'
-				'gstatic.com'
+				'*static.com'
 				#'accounts.google.com'
 				#'chrome.google.com'
 				#'mail.google.com'
