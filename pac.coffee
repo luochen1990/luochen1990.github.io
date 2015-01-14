@@ -49,6 +49,7 @@ FindProxyForURL = do ->
 				'googlesyndication.com'
 				'google*.*'
 				'*static.com'
+				'*cdn.com'
 				#'accounts.google.com'
 				#'chrome.google.com'
 				#'mail.google.com'
