@@ -16,16 +16,7 @@ FindProxyForURL = do ->
 		blocked_by_company:
 			ways: 'aliyun direct'
 			list: [
-				'tmall.com'
-				'amazon.*'
-				'jd.com'
-				'paipai.com'
-				'meituan.com'
-				'taobao.com'
-				'appspot.com'
-				'360buy.com'
-				'hjav.org'
-				'yyv.co'
+				'qq.com'
 			]
 		blocked_by_gfw:
 			ways: 'shadowsocks direct'
