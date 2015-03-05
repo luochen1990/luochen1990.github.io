@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /_layouts/
+Disallow: /_posts/_hide/
+Disallow: /res/
+Disallow: /stylesheets/
+Disallow: /pac.*
