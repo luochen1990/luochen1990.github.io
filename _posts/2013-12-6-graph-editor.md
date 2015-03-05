@@ -1,8 +1,3 @@
----
-title: Graph Editor
-layout: default
----
-
 图编辑器
 ========
 

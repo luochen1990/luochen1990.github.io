@@ -1,8 +1,3 @@
----
-title: coffeescript editor
-layout: default
----
-
 三岁的聪聪与数学
 ================
 
