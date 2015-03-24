@@ -2,8 +2,12 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 	$(coffee_code_div).css('tab-size': '4', '-moz-tab-size': '4', '-o-tab-size': '4')
 	_js_code = ''
 	_compile = () ->
-		_js_code = CoffeeScript.compile($(coffee_code_div).val(), {bare: true})
-		$(js_code_div).val(_js_code) if js_code_div
+		try
+			_js_code = CoffeeScript.compile($(coffee_code_div).val(), {bare: true})
+			$(js_code_div).val(_js_code) if js_code_div
+		catch e
+			alert e
+			throw e
 		return null
 	_eval = () ->
 		try
@@ -151,7 +155,7 @@ $(document).ready ->
 		data.libs = data.libs.concat [url]
 		storage.write(data)
 		$.getScript(url)
-
+ 
 	$('#get-url').on 'click', ->
 		data.code = editor.coffee_code()
 		storage.write(data)
@@ -163,4 +167,6 @@ $(document).ready ->
 			$('#js-block').css('display': 'inline-block')
 		else
 			$('#js-block').css('display': 'none')
+
+	$('#code-block').trigger 'run'
 
