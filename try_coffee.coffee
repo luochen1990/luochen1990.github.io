@@ -6,7 +6,11 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 		$(js_code_div).val(_js_code) if js_code_div
 		return null
 	_eval = () ->
-		eval(_js_code)
+		try
+			eval(_js_code)
+		catch e
+			alert e
+			throw e
 
 	$(coffee_code_div).on 'run', ->
 		log.histories.splice(0, Infinity)
@@ -112,6 +116,17 @@ storage =
 	#read: -> obj(localStorage.data ? '{}')
 	#write: (data) -> localStorage.data = json(data)
 
+is_empty_item = (it) ->
+	return true if not it?
+	return true if it instanceof Array and it.length == 0
+	return true if typeof it is 'string' and it.length == 0
+	return false
+
+filter_empty_item = (d) ->
+	r = {}
+	(r[k] = v) for k, v of d when not is_empty_item v
+	r
+
 $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
 
@@ -140,5 +155,12 @@ $(document).ready ->
 	$('#get-url').on 'click', ->
 		data.code = editor.coffee_code()
 		storage.write(data)
-		location.search = uri_encoder(json)(data)
+		location.search = uri_encoder(json)(filter_empty_item data)
+
+	$('#show-js-button').on 'click', ->
+		log -> 'AA'
+		if $('#js-block').css('display') == 'none'
+			$('#js-block').css('display': 'inline-block')
+		else
+			$('#js-block').css('display': 'none')
 
