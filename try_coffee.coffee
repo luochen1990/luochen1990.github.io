@@ -130,7 +130,7 @@ filter_empty_item = (d) ->
 $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
 
-	data = Object.extend(uri_decoder(obj)(location.search), storage.read(), libs: [], code: '')
+	data = Object.extend(uri_decoder(obj)(location.search), storage.read(), libs: [], code: "log -> 'hello, coffee-mate!'")
 	console.log 'data.libs:', data.libs
 	#log -> '\n' + data.code
 	storage.write(data)

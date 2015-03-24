@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>coffeescript online</title>
+		<title>Try Coffee</title>
 		<script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
 		<!-- <script src="http://libs.cncdn.cn/coffee-script/1.7.1/coffee-script.min.js"></script> -->
 		<script src="http://coffeescript.org/extras/coffee-script.js"></script>
@@ -8,6 +8,9 @@
 		<script src="https://rawgit.com/luochen1990/coffee-mate/master/global.js" type="text/javascript"></script>
 		<script src="try_coffee.js"></script>
 		<style>
+		.operations {
+			margin-bottom: 5px;
+		}
 		.operations button, .operations input {
 			background: -webkit-gradient(linear, left top, left bottom, from(#fafafa), to(#eaeaea));
 			margin: 0;
@@ -23,9 +26,8 @@
 			font-family: "Helvetica Neue", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, sans-serif !important;
 			font-size: 16px;
 			line-height: 1.2em;
-			background-opacity: 0.5;
 			outline: none;
-			margin: 5px 0 20px;
+			margin: 5px 0;
 			color: #def;
 			background-color: rgb(24, 26, 58);
 		}
@@ -40,7 +42,7 @@
 			<button id='get-url'>Get URL with Code</button>
 		</div>
 		<div>
-			<textarea id='code-block' rows='20' cols='80'></textarea>
+			<textarea id='code-block' rows='20' cols='80' autofocus></textarea>
 			<textarea id='output-area' rows='20' cols='80' disabled></textarea>
 		</div>
 		<div>

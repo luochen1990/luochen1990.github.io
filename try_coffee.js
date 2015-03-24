@@ -174,7 +174,7 @@
     editor = init_coffee_editor('#code-block', '#js-block');
     data = Object.extend(uri_decoder(obj)(location.search), storage.read(), {
       libs: [],
-      code: ''
+      code: "log -> 'hello, coffee-mate!'"
     });
     console.log('data.libs:', data.libs);
     storage.write(data);
