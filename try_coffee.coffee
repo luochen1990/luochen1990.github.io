@@ -168,5 +168,6 @@ $(document).ready ->
 		else
 			$('#js-block').css('display': 'none')
 
+window.onload = ->
 	$('#code-block').trigger 'run'
 

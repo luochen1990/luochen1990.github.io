@@ -212,7 +212,7 @@
       storage.write(data);
       return location.search = uri_encoder(json)(filter_empty_item(data));
     });
-    $('#show-js-button').on('click', function() {
+    return $('#show-js-button').on('click', function() {
       log(function() {
         return 'AA';
       });
@@ -226,8 +226,11 @@
         });
       }
     });
-    return $('#code-block').trigger('run');
   });
+
+  window.onload = function() {
+    return $('#code-block').trigger('run');
+  };
 
 }).call(this);
 
