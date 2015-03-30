@@ -115,10 +115,8 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 ##################################################################
 
 storage =
-	read: -> ''
-	write: ->
-	#read: -> obj(localStorage.data ? '{}')
-	#write: (data) -> localStorage.data = json(data)
+	read: -> obj(localStorage.data ? '{}')
+	write: (data) -> localStorage.data = json(data)
 
 is_empty_item = (it) ->
 	return true if not it?
@@ -131,20 +129,42 @@ filter_empty_item = (d) ->
 	(r[k] = v) for k, v of d when not is_empty_item v
 	r
 
+decode = uri_decoder(obj)
+encode = uri_encoder(json)
+
+status = {}
+init_status = ->
+	{libs, code} = decode(location.search)
+	status =
+		libs: (libs ? [])
+		code: (obj(location.hash[1...] or 'null') ? code ? "log -> 'hello, coffee-mate!'")
+	if status.code?
+		location.hash = json status.code
+		location.search = if status.libs.length > 0 then encode libs: status.libs else ''
+set_status = (d) ->
+	status = libs: (d.libs ? []), code: d.code
+	location.hash = json status.code
+	location.search = if status.libs.length > 0 then encode libs: status.libs else ''
+set_libs = (libs) ->
+	status.libs = libs ? []
+	location.search = if status.libs.length > 0 then encode libs: status.libs else ''
+set_code = (code) ->
+	status.code = code ? ''
+	location.hash = json status.code
+
 $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
+	do init_status
+	log -> status
 
-	data = Object.extend(uri_decoder(obj)(location.search), storage.read(), libs: [], code: "log -> 'hello, coffee-mate!'")
-	console.log 'data.libs:', data.libs
-	#log -> '\n' + data.code
-	storage.write(data)
-	for url in data.libs
+	console.log 'libs: ', status.libs
+	for url in status.libs
 		$.getScript(url)
-	editor.coffee_code(data.code)
+	editor.coffee_code(status.code)
 
 	$('#code-block').on 'run', ->
-		data.code = editor.coffee_code()
-		storage.write(data)
+		set_code editor.coffee_code()
+		storage.write(status)
 		$('#output-area').val(log.histories.map((xs) -> xs.join(' ')).join('\n'))
 
 	$('#run-button').on 'click', ->
@@ -152,14 +172,15 @@ $(document).ready ->
 
 	$('#load-lib-button').on 'click', ->
 		url = $('#lib-to-load').val()
-		data.libs = data.libs.concat [url]
-		storage.write(data)
+		set_libs status.libs.concat [url]
+		storage.write(status)
 		$.getScript(url)
  
-	$('#get-url').on 'click', ->
-		data.code = editor.coffee_code()
-		storage.write(data)
-		location.search = uri_encoder(json)(filter_empty_item data)
+	#$('#get-url').on 'click', ->
+	#	data.code = editor.coffee_code()
+	#	storage.write(data)
+	#	location.search = '' if location.search.length > 0
+	#	location.hash = encode(filter_empty_item data)
 
 	$('#show-js-button').on 'click', ->
 		log -> 'AA'
@@ -167,6 +188,10 @@ $(document).ready ->
 			$('#js-block').css('display': 'inline-block')
 		else
 			$('#js-block').css('display': 'none')
+
+	#$('#load-storage').on 'click', ->
+	#	storage.write status
+	#	set_status storage.read()
 
 window.onload = ->
 	$('#code-block').trigger 'run'
