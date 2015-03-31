@@ -131,8 +131,8 @@ filter_empty_item = (d) ->
 
 decode_search = uri_decoder(obj)
 encode_search = uri_encoder(json)
-decode_hash = (b64) -> obj(atob(b64) or 'null')
-encode_hash = (s) -> btoa json s
+decode_hash = (b64) -> decodeURIComponent escape atob b64
+encode_hash = (s) -> btoa unescape encodeURIComponent s
 
 editor = null
 _status = {}
@@ -140,7 +140,7 @@ init_status = ->
 	{libs, code} = decode_search(location.search)
 	_status =
 		libs: (libs ? [])
-		code: (decode_hash(location.hash[1...]) ? code ? "log -> 'hello, coffee-mate!'")
+		code: (decode_hash(location.hash[1...]) or code ? "log -> 'hello, coffee-mate!'")
 	log -> _status
 	if _status.code?
 		location.hash = encode_hash _status.code

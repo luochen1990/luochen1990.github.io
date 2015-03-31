@@ -184,11 +184,11 @@
   encode_search = uri_encoder(json);
 
   decode_hash = function(b64) {
-    return obj(atob(b64) || 'null');
+    return decodeURIComponent(escape(atob(b64)));
   };
 
   encode_hash = function(s) {
-    return btoa(json(s));
+    return btoa(unescape(encodeURIComponent(s)));
   };
 
   editor = null;
@@ -196,11 +196,11 @@
   _status = {};
 
   init_status = function() {
-    var code, j, len, libs, ref, ref1, ref2, ref3, results, url;
+    var code, j, len, libs, ref, ref1, ref2, results, url;
     ref = decode_search(location.search), libs = ref.libs, code = ref.code;
     _status = {
       libs: libs != null ? libs : [],
-      code: (ref1 = (ref2 = decode_hash(location.hash.slice(1))) != null ? ref2 : code) != null ? ref1 : "log -> 'hello, coffee-mate!'"
+      code: (ref1 = decode_hash(location.hash.slice(1)) || code) != null ? ref1 : "log -> 'hello, coffee-mate!'"
     };
     log(function() {
       return _status;
@@ -213,10 +213,10 @@
     }
     editor.coffee_code(_status.code);
     console.log('libs: ', _status.libs);
-    ref3 = _status.libs;
+    ref2 = _status.libs;
     results = [];
-    for (j = 0, len = ref3.length; j < len; j++) {
-      url = ref3[j];
+    for (j = 0, len = ref2.length; j < len; j++) {
+      url = ref2[j];
       results.push($.getScript(url));
     }
     return results;
