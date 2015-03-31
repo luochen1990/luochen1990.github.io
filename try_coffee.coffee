@@ -134,6 +134,7 @@ encode_search = uri_encoder(json)
 decode_hash = (b64) -> obj(atob(b64) or 'null')
 encode_hash = (s) -> btoa json s
 
+editor = null
 _status = {}
 init_status = ->
 	{libs, code} = decode_search(location.search)
@@ -144,6 +145,10 @@ init_status = ->
 	if _status.code?
 		location.hash = encode_hash _status.code
 		location.search = if _status.libs.length > 0 then encode_search libs: _status.libs else ''
+	editor.coffee_code(_status.code)
+	console.log 'libs: ', _status.libs
+	for url in _status.libs
+		$.getScript(url)
 set_status = (d) ->
 	_status = libs: (d.libs ? []), code: d.code
 	location.hash = encode_hash _status.code
@@ -159,10 +164,10 @@ $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
 	do init_status
 
-	console.log 'libs: ', _status.libs
-	for url in _status.libs
-		$.getScript(url)
-	editor.coffee_code(_status.code)
+	$(window).on 'hashchange', ->
+		_status.code = decode_hash(location.hash[1...])
+		editor.coffee_code(_status.code)
+		$('#code-block').trigger 'run'
 
 	$('#code-block').on 'run', ->
 		set_code editor.coffee_code()
@@ -193,6 +198,7 @@ $(document).ready ->
 
 	$('#download-code').on 'click', ->
 		$('#download-code').attr(href: "data:text/coffeescript;base64,#{btoa _status.code}")
+
 	#$('#load-storage').on 'click', ->
 	#	storage.write _status
 	#	set_status storage.read()
