@@ -129,42 +129,44 @@ filter_empty_item = (d) ->
 	(r[k] = v) for k, v of d when not is_empty_item v
 	r
 
-decode = uri_decoder(obj)
-encode = uri_encoder(json)
+decode_search = uri_decoder(obj)
+encode_search = uri_encoder(json)
+decode_hash = (b64) -> obj(atob(b64) or 'null')
+encode_hash = (s) -> btoa json s
 
-status = {}
+_status = {}
 init_status = ->
-	{libs, code} = decode(location.search)
-	status =
+	{libs, code} = decode_search(location.search)
+	_status =
 		libs: (libs ? [])
-		code: (obj(location.hash[1...] or 'null') ? code ? "log -> 'hello, coffee-mate!'")
-	if status.code?
-		location.hash = json status.code
-		location.search = if status.libs.length > 0 then encode libs: status.libs else ''
+		code: (decode_hash(location.hash[1...]) ? code ? "log -> 'hello, coffee-mate!'")
+	log -> _status
+	if _status.code?
+		location.hash = encode_hash _status.code
+		location.search = if _status.libs.length > 0 then encode_search libs: _status.libs else ''
 set_status = (d) ->
-	status = libs: (d.libs ? []), code: d.code
-	location.hash = json status.code
-	location.search = if status.libs.length > 0 then encode libs: status.libs else ''
+	_status = libs: (d.libs ? []), code: d.code
+	location.hash = encode_hash _status.code
+	location.search = if _status.libs.length > 0 then encode_search libs: _status.libs else ''
 set_libs = (libs) ->
-	status.libs = libs ? []
-	location.search = if status.libs.length > 0 then encode libs: status.libs else ''
+	_status.libs = libs ? []
+	location.search = if _status.libs.length > 0 then encode_search libs: _status.libs else ''
 set_code = (code) ->
-	status.code = code ? ''
-	location.hash = json status.code
+	_status.code = code ? ''
+	location.hash = encode_hash _status.code
 
 $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
 	do init_status
-	log -> status
 
-	console.log 'libs: ', status.libs
-	for url in status.libs
+	console.log 'libs: ', _status.libs
+	for url in _status.libs
 		$.getScript(url)
-	editor.coffee_code(status.code)
+	editor.coffee_code(_status.code)
 
 	$('#code-block').on 'run', ->
 		set_code editor.coffee_code()
-		storage.write(status)
+		storage.write(_status)
 		$('#output-area').val(log.histories.map((xs) -> xs.join(' ')).join('\n'))
 
 	$('#run-button').on 'click', ->
@@ -172,8 +174,8 @@ $(document).ready ->
 
 	$('#load-lib-button').on 'click', ->
 		url = $('#lib-to-load').val()
-		set_libs status.libs.concat [url]
-		storage.write(status)
+		set_libs _status.libs.concat [url]
+		storage.write(_status)
 		$.getScript(url)
  
 	#$('#get-url').on 'click', ->
@@ -189,8 +191,10 @@ $(document).ready ->
 		else
 			$('#js-block').css('display': 'none')
 
+	$('#download-code').on 'click', ->
+		$('#download-code').attr(href: "data:text/coffeescript;base64,#{btoa _status.code}")
 	#$('#load-storage').on 'click', ->
-	#	storage.write status
+	#	storage.write _status
 	#	set_status storage.read()
 
 window.onload = ->
