@@ -56,78 +56,91 @@
       return c;
     };
     tab = '\t';
-    $(coffee_code_div).on('keydown', function(e) {
+    $(coffee_code_div).on('keydown', function(e, data) {
       var after, before, c, cnt, end, i, indent, inserted, j, l, last_line, lines, ref, ref1, ref2, selected, start, text;
-      if ((ref = e.keyCode) === 9 || ref === 13 || ref === 8) {
-        e.preventDefault();
+      if (e.originalEvent != null) {
+        if ((ref = e.keyCode) === 9 || ref === 13 || ref === 8) {
+          e.preventDefault();
+          text = this.value;
+          start = this.selectionStart;
+          end = this.selectionEnd;
+          if (e.keyCode === 9 && start !== end) {
+            while (start - 1 >= 0 && text[start - 1] !== '\n') {
+              start -= 1;
+            }
+          }
+          selected = text.slice(start, end);
+          before = text.slice(0, start);
+          after = text.slice(end);
+          if (e.keyCode === 9) {
+            if (start === end) {
+              this.value = before + tab + after;
+              this.selectionStart = this.selectionEnd = start + tab.length;
+            } else {
+              lines = selected.split('\n');
+              cnt = 0;
+              if (e.shiftKey) {
+                for (i = j = 0, ref1 = lines.length; 0 <= ref1 ? j < ref1 : j > ref1; i = 0 <= ref1 ? ++j : --j) {
+                  if (lines[i].slice(0, tab.length) === tab) {
+                    lines[i] = lines[i].slice(tab.length);
+                    cnt -= tab.length;
+                  }
+                }
+              } else {
+                for (i = l = 0, ref2 = lines.length; 0 <= ref2 ? l < ref2 : l > ref2; i = 0 <= ref2 ? ++l : --l) {
+                  lines[i] = tab + lines[i];
+                  cnt += tab.length;
+                }
+              }
+              selected = lines.join('\n');
+              this.value = before + selected + after;
+              this.selectionStart = start;
+              this.selectionEnd = end + cnt;
+            }
+          }
+          if (e.keyCode === 8) {
+            if (start === end) {
+              c = before.slice(-tab.length) === tab ? tab.length : 1;
+              this.value = before.slice(0, -c) + after;
+              this.selectionStart = this.selectionEnd = start - c;
+            } else {
+              this.value = before + after;
+              this.selectionStart = this.selectionEnd = start;
+            }
+          }
+          if (e.keyCode === 13) {
+            if (e.shiftKey || e.ctrlKey) {
+              $(coffee_code_div).trigger('run');
+            } else {
+              if (before.length === 0) {
+                this.value = before + '\n' + after;
+                this.selectionStart = this.selectionEnd = start + 1;
+              } else {
+                lines = before.split('\n');
+                last_line = lines[lines.length - 1];
+                indent = count_indent(last_line, tab);
+                if (/(^\s*(for|while|until|if|unless) )|((\(|\[|\{|[-=]>)$)/.test(last_line)) {
+                  indent += 1;
+                }
+                inserted = '\n' + tab.repeat(indent);
+                this.value = before + inserted + after;
+                this.selectionStart = this.selectionEnd = start + inserted.length;
+              }
+            }
+          }
+        }
+      } else {
         text = this.value;
         start = this.selectionStart;
         end = this.selectionEnd;
-        if (e.keyCode === 9 && start !== end) {
-          while (start - 1 >= 0 && text[start - 1] !== '\n') {
-            start -= 1;
-          }
-        }
         selected = text.slice(start, end);
         before = text.slice(0, start);
         after = text.slice(end);
-        if (e.keyCode === 9) {
-          if (start === end) {
-            this.value = before + tab + after;
-            this.selectionStart = this.selectionEnd = start + tab.length;
-          } else {
-            lines = selected.split('\n');
-            cnt = 0;
-            if (e.shiftKey) {
-              for (i = j = 0, ref1 = lines.length; 0 <= ref1 ? j < ref1 : j > ref1; i = 0 <= ref1 ? ++j : --j) {
-                if (lines[i].slice(0, tab.length) === tab) {
-                  lines[i] = lines[i].slice(tab.length);
-                  cnt -= tab.length;
-                }
-              }
-            } else {
-              for (i = l = 0, ref2 = lines.length; 0 <= ref2 ? l < ref2 : l > ref2; i = 0 <= ref2 ? ++l : --l) {
-                lines[i] = tab + lines[i];
-                cnt += tab.length;
-              }
-            }
-            selected = lines.join('\n');
-            this.value = before + selected + after;
-            this.selectionStart = start;
-            this.selectionEnd = end + cnt;
-          }
-        }
-        if (e.keyCode === 8) {
-          if (start === end) {
-            c = before.slice(-tab.length) === tab ? tab.length : 1;
-            this.value = before.slice(0, -c) + after;
-            this.selectionStart = this.selectionEnd = start - c;
-          } else {
-            this.value = before + after;
-            this.selectionStart = this.selectionEnd = start;
-          }
-        }
-        if (e.keyCode === 13) {
-          if (e.shiftKey || e.ctrlKey) {
-            return $(coffee_code_div).trigger('run');
-          } else {
-            if (before.length === 0) {
-              this.value = before + '\n' + after;
-              return this.selectionStart = this.selectionEnd = start + 1;
-            } else {
-              lines = before.split('\n');
-              last_line = lines[lines.length - 1];
-              indent = count_indent(last_line, tab);
-              if (/(^\s*(for|while|until|if|unless) )|((\(|\[|\{|[-=]>)$)/.test(last_line)) {
-                indent += 1;
-              }
-              inserted = '\n' + tab.repeat(indent);
-              this.value = before + inserted + after;
-              return this.selectionStart = this.selectionEnd = start + inserted.length;
-            }
-          }
-        }
+        this.value = before + data.char + after;
+        this.selectionStart = this.selectionEnd = start + data.char.length;
+        this.focus();
       }
+      return true;
     });
     return {
       coffee_code: function(s) {
@@ -246,7 +259,12 @@
     return location.hash = encode_hash(_status.code);
   };
 
+  log(function() {
+    return navigator.userAgent;
+  });
+
   $(document).ready(function() {
+    var keys;
     editor = init_coffee_editor('#code-block', '#js-block');
     init_status();
     $(window).on('hashchange', function() {
@@ -254,6 +272,29 @@
       editor.coffee_code(_status.code);
       return $('#code-block').trigger('run');
     });
+    if (/Mobile/.test(navigator.userAgent)) {
+      keys = [['tab', '\t'], ['cr', '\n'], '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '\\', '|', '`', '~', '[', ']', ';', ':', '{', '}', '\\', '"', ',', '<', '<', '.', '/', '?'];
+      foreach(enumerate(keys), function(arg) {
+        var i, kb, key, keyname, keyvalue, ref;
+        i = arg[0], key = arg[1];
+        kb = $("#keyboard-part-" + (Math.floor(i / 15)));
+        if (typeof key === 'string') {
+          ref = [key, key], keyname = ref[0], keyvalue = ref[1];
+        } else {
+          keyname = key[0], keyvalue = key[1];
+        }
+        kb.append("<button id=\"key-" + i + "\">" + keyname + "</button>");
+        return $("#key-" + i).on('click', function(e) {
+          e.preventDefault();
+          return $('#code-block').trigger('keydown', {
+            char: keyvalue
+          });
+        });
+      });
+      $("#virtual-keyboard").css({
+        display: 'block'
+      });
+    }
     $('#code-block').on('run', function() {
       set_code(editor.coffee_code());
       storage.write(_status);
@@ -272,9 +313,6 @@
       return $.getScript(url);
     });
     $('#show-js-button').on('click', function() {
-      log(function() {
-        return 'AA';
-      });
       if ($('#js-block').css('display') === 'none') {
         return $('#js-block').css({
           'display': 'inline-block'

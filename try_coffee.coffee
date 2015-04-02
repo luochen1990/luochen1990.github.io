@@ -35,73 +35,89 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 	#tab = ' '.repeat(4)
 	tab = '\t'
 
-	$(coffee_code_div).on 'keydown', (e) ->
+	$(coffee_code_div).on 'keydown', (e, data) ->
 		#log json [e.keyCode, e.shiftKey]
-		if e.keyCode in [9, 13, 8]
-			e.preventDefault()
+		#log 'textarea keydown', -> e
+		#log -> e.keyCode
+		#log -> e.keyCode in [9, 13, 8]
+		if e.originalEvent?
+			if e.keyCode in [9, 13, 8]
+				e.preventDefault()
+				text = this.value
+				start = this.selectionStart
+				end = this.selectionEnd
+				if e.keyCode == 9 and start != end
+					while start-1 >= 0 and text[start-1] != '\n'
+						start -= 1
+
+				selected = text.slice(start, end)
+				before = text.slice(0, start)
+				after = text.slice(end)
+
+				if e.keyCode == 9 #tab
+					if start == end
+						this.value = before + tab + after
+						this.selectionStart = this.selectionEnd = start + tab.length
+					else
+						#log json [e.keyCode, e.shiftKey]
+						lines = selected.split('\n')
+						cnt = 0
+						if e.shiftKey
+							for i in [0...lines.length]
+								if lines[i].slice(0, tab.length) == tab
+									lines[i] = lines[i].slice(tab.length)
+									cnt -= tab.length
+						else
+							for i in [0...lines.length]
+								lines[i] = tab + lines[i]
+								cnt += tab.length
+
+						selected = lines.join('\n')
+						#log before
+						#log selected
+						#log after
+						this.value = before + selected + after
+						this.selectionStart = start
+						this.selectionEnd = end + cnt
+				if e.keyCode == 8 #backspace
+					if start == end
+						c = if before.slice(-tab.length) == tab then tab.length else 1
+						this.value = before.slice(0, -c) + after
+						this.selectionStart = this.selectionEnd = start - c
+					else
+						this.value = before + after
+						this.selectionStart = this.selectionEnd = start
+				if e.keyCode == 13 #enter
+					if e.shiftKey or e.ctrlKey
+						$(coffee_code_div).trigger 'run'
+					else
+						if before.length == 0
+							#log 'aaaa'
+							this.value = before + '\n' + after
+							this.selectionStart = this.selectionEnd = start + 1
+						else
+							lines = before.split('\n')
+							last_line = lines[lines.length - 1]
+							#log last_line
+							indent = count_indent(last_line, tab)
+							indent += 1 if /(^\s*(for|while|until|if|unless) )|((\(|\[|\{|[-=]>)$)/.test last_line
+							#log indent
+							inserted = '\n' + tab.repeat(indent)
+							#log inserted
+							this.value = before + inserted + after
+							this.selectionStart = this.selectionEnd = start + inserted.length
+		else
 			text = this.value
 			start = this.selectionStart
 			end = this.selectionEnd
-			if e.keyCode == 9 and start != end
-				while start-1 >= 0 and text[start-1] != '\n'
-					start -= 1
 
 			selected = text.slice(start, end)
 			before = text.slice(0, start)
 			after = text.slice(end)
-
-			if e.keyCode == 9 #tab
-				if start == end
-					this.value = before + tab + after
-					this.selectionStart = this.selectionEnd = start + tab.length
-				else
-					#log json [e.keyCode, e.shiftKey]
-					lines = selected.split('\n')
-					cnt = 0
-					if e.shiftKey
-						for i in [0...lines.length]
-							if lines[i].slice(0, tab.length) == tab
-								lines[i] = lines[i].slice(tab.length)
-								cnt -= tab.length
-					else
-						for i in [0...lines.length]
-							lines[i] = tab + lines[i]
-							cnt += tab.length
-
-					selected = lines.join('\n')
-					#log before
-					#log selected
-					#log after
-					this.value = before + selected + after
-					this.selectionStart = start
-					this.selectionEnd = end + cnt
-			if e.keyCode == 8 #backspace
-				if start == end
-					c = if before.slice(-tab.length) == tab then tab.length else 1
-					this.value = before.slice(0, -c) + after
-					this.selectionStart = this.selectionEnd = start - c
-				else
-					this.value = before + after
-					this.selectionStart = this.selectionEnd = start
-			if e.keyCode == 13 #enter
-				if e.shiftKey or e.ctrlKey
-					$(coffee_code_div).trigger 'run'
-				else
-					if before.length == 0
-						#log 'aaaa'
-						this.value = before + '\n' + after
-						this.selectionStart = this.selectionEnd = start + 1
-					else
-						lines = before.split('\n')
-						last_line = lines[lines.length - 1]
-						#log last_line
-						indent = count_indent(last_line, tab)
-						indent += 1 if /(^\s*(for|while|until|if|unless) )|((\(|\[|\{|[-=]>)$)/.test last_line
-						#log indent
-						inserted = '\n' + tab.repeat(indent)
-						#log inserted
-						this.value = before + inserted + after
-						this.selectionStart = this.selectionEnd = start + inserted.length
+			this.value = before + data.char + after
+			this.selectionStart = this.selectionEnd = start + data.char.length
+			this.focus()
+		return true
 
 	coffee_code: (s) ->
 		if s?
@@ -160,6 +176,55 @@ set_code = (code) ->
 	_status.code = code ? ''
 	location.hash = encode_hash _status.code
 
+#keyboard_event_info = do ->
+#	{literal2shiftcode} = do ->
+#		d =
+#			'tab': [9, false]
+#			'cr': [13, false]
+#			'!': [49, true]
+#			'@': [50, true]
+#			'#': [51, true]
+#			'$': [52, true]
+#			'%': [53, true]
+#			'^': [54, true]
+#			'&': [55, true]
+#			'*': [56, true]
+#			'(': [57, true]
+#			')': [48, true]
+#			'-': [189, false]
+#			'_': [189, true]
+#			'=': [187, false]
+#			'+': [187, true]
+#			'\\': [220, false]
+#			'|': [220, true]
+#			'`': [192, false]
+#			'~': [192, true]
+#			'[': [219, false]
+#			']': [221, false]
+#			';': [186, false]
+#			':': [186, true]
+#			'{': [219, true]
+#			'}': [221, true]
+#			'\'': [222, false]
+#			'"': [222, true]
+#			',': [188, false]
+#			'<': [188, true]
+#			'<': [190, true]
+#			'.': [190, false]
+#			'/': [191, false]
+#			'?': [191, true]
+#		literal2shiftcode: (v) -> keyCode: d[v][0], shiftKey: d[v][1]
+#
+#	(state_literal) ->
+#		[_, alt, meta, ctrl, literal] = state_literal.match /(a-)?(m-)?(c-)?((s-)?.*)/
+#		{shiftKey, keyCode} = literal2shiftcode(literal)
+#		r = keyCode: keyCode, shiftKey: shiftKey#, ctrlKey: ctrl ? false, metaKey: meta ? false, altKey: alt ? false
+#		#log -> r
+#		return r
+
+
+log -> navigator.userAgent
+
 $(document).ready ->
 	editor = init_coffee_editor('#code-block', '#js-block')
 	do init_status
@@ -168,6 +233,33 @@ $(document).ready ->
 		_status.code = decode_hash(location.hash[1...])
 		editor.coffee_code(_status.code)
 		$('#code-block').trigger 'run'
+
+	#$('body').on 'keydown', (e) -> #TODO: add mode support.
+	#	#log 'window keydown', -> e
+	#	if e.keyCode == 27 # <esc>
+	#		$('#code-block').blur()
+	#		return false
+	#	else if chr(e.keyCode) in ['I', 'A']
+	#		$('#code-block').focus()
+	#		return false
+	#	true
+
+	if /Mobile/.test navigator.userAgent
+		keys = [['tab', '\t'], ['cr', '\n'], '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '\\', '|', '`', '~', '[', ']', ';', ':', '{', '}', '\\', '"', ',', '<', '<', '.', '/', '?']
+
+		foreach enumerate(keys), ([i, key]) ->
+			kb = $("#keyboard-part-#{i//15}")
+			if typeof key is 'string'
+				[keyname, keyvalue] = [key, key]
+			else
+				[keyname, keyvalue] = key
+			kb.append "<button id=\"key-#{i}\">#{keyname}</button>"
+			$("#key-#{i}").on 'click', (e) ->
+				e.preventDefault()
+				#e = $.Event('keydown', keyboard_event_info(keyname))
+				$('#code-block').trigger 'keydown', {char: keyvalue}
+				#$('#code-block').focus()
+		$("#virtual-keyboard").css(display: 'block')
 
 	$('#code-block').on 'run', ->
 		set_code editor.coffee_code()
@@ -190,7 +282,6 @@ $(document).ready ->
 	#	location.hash = encode(filter_empty_item data)
 
 	$('#show-js-button').on 'click', ->
-		log -> 'AA'
 		if $('#js-block').css('display') == 'none'
 			$('#js-block').css('display': 'inline-block')
 		else
