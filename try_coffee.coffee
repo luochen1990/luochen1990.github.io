@@ -248,7 +248,7 @@ $(document).ready ->
 		keys = [['tab', '\t'], ['cr', '\n'], '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '\\', '|', '`', '~', '[', ']', ';', ':', '{', '}', '\\', '"', ',', '<', '<', '.', '/', '?']
 
 		foreach enumerate(keys), ([i, key]) ->
-			kb = $("#keyboard-part-#{i//15}")
+			kb = $("#keyboard-part-#{i//12}")
 			if typeof key is 'string'
 				[keyname, keyvalue] = [key, key]
 			else

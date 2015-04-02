@@ -277,7 +277,7 @@
       foreach(enumerate(keys), function(arg) {
         var i, kb, key, keyname, keyvalue, ref;
         i = arg[0], key = arg[1];
-        kb = $("#keyboard-part-" + (Math.floor(i / 15)));
+        kb = $("#keyboard-part-" + (Math.floor(i / 12)));
         if (typeof key === 'string') {
           ref = [key, key], keyname = ref[0], keyvalue = ref[1];
         } else {
