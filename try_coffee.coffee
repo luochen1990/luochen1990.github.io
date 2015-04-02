@@ -11,7 +11,8 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 		return null
 	_eval = () ->
 		try
-			eval(_js_code)
+			_js_code_runner = eval "(function(){#{_js_code.toString()}})"
+			do _js_code_runner
 		catch e
 			alert e
 			throw e

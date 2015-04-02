@@ -27,9 +27,10 @@
       return null;
     };
     _eval = function() {
-      var e;
+      var _js_code_runner, e;
       try {
-        return eval(_js_code);
+        _js_code_runner = eval("(function(){" + (_js_code.toString()) + "})");
+        return _js_code_runner();
       } catch (_error) {
         e = _error;
         alert(e);
