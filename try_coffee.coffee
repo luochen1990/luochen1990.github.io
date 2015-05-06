@@ -1,6 +1,7 @@
 init_coffee_editor = (coffee_code_div, js_code_div) ->
 	$(coffee_code_div).css('tab-size': '4', '-moz-tab-size': '4', '-o-tab-size': '4')
 	_js_code = ''
+	#_history_counter = 0
 	_compile = () ->
 		try
 			_js_code = CoffeeScript.compile($(coffee_code_div).val(), {bare: true})
@@ -11,7 +12,7 @@ init_coffee_editor = (coffee_code_div, js_code_div) ->
 		return null
 	_eval = () ->
 		try
-			_js_code_runner = eval "(function(){#{_js_code.toString()}})"
+			_js_code_runner = eval "(function(){#{_js_code.toString()}})\n//@ sourceURL=UserCode.js"
 			do _js_code_runner
 		catch e
 			alert e

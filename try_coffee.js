@@ -29,7 +29,7 @@
     _eval = function() {
       var _js_code_runner, e;
       try {
-        _js_code_runner = eval("(function(){" + (_js_code.toString()) + "})");
+        _js_code_runner = eval("(function(){" + (_js_code.toString()) + "})\n//@ sourceURL=UserCode.js");
         return _js_code_runner();
       } catch (_error) {
         e = _error;
