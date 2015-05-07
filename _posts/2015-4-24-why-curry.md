@@ -294,3 +294,5 @@ rotate = (\(x, y) -> (y, -x))
 2. 如果要定义的多参函数是一个闭合函数，那么它是很可能需要被多次应用的，这种情况下，应该用组合型参数的方式来处理。
 3. 如果先指定某一些参数就有明确的意义，那么就应该用科里化的方式来处理。
 
+
+PS：当然，这三种传参方式之间进行转换也不复杂，熟悉这些转换的话，就可以比较容易地把别人定义的函数变形成顺手的样子了。这里有一个相关的[演示](http://luochen1990.me/try_coffee?#cGx1cyA9IChhKSAtPiAoYikgLT4gYSArIGIKbG9nIC0+IChwbHVzIDEpIDIKCnBsdXMyID0gdW5jdXJyeTIgcGx1cwpsb2cgLT4gcGx1czIgMSwgMgoKcGx1czMgPSBwYWNrIHBsdXMyCmxvZyAtPiBwbHVzMyBbMSwgMl0KCnN1bSA9IGZvbGRsICh1bmN1cnJ5MiBwbHVzKSwgMApsb2cgLT4gc3VtIFsxLCAyLCAzXQoKc3VtMiA9IHVucGFjayBzdW0KbG9nIC0+IHN1bTIgMSwgMiwgMw==)
