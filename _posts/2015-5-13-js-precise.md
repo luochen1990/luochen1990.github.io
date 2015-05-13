@@ -1,6 +1,6 @@
 ---
-title: Javascript中对数值取N位有效数字
-tags: Javascript, precise, float, 有效数字, 科学计数
+title: JavaScript中对数值取N位有效数字
+tags: JavaScript, precise, float, 有效数字, 科学计数
 layout: default
 ---
 
@@ -78,7 +78,7 @@ precise = (n) -> (x) ->
 
 最终，发现想通过数值计算实现这个需求似乎走不通，因为不管怎么样，要得到结果最后一步都需要经过浮点数计算，而一旦进行浮点数计算就会产生精度损失，然后就会产生一个unreasonable的结果。
 
-正当我打算走“先转字符串处理”这条路的时候，@文祎骁 同学帮我发现了toPrecision这个好东西，当然用toPrecision也一样。
+正当我打算走“先转字符串处理”这条路的时候，@文祎骁 同学帮我发现了toExponential这个好东西，当然用toPrecision也一样。
 
 于是最后这样子就实现了：
 
@@ -92,6 +92,6 @@ precise = (n) -> (x) ->
 结论
 ----
 
-1. Javascript似乎能保证reasonable的数值字面值被解析为浮点数之后，再toString成字符串还是reasonable的；但是不能保证两个reasonable的数值字面值被解析为浮点数之后，进行（加减乘除等）浮点运算的结果，toString成字符串后，仍然是reasonable的。这点比较有意思。
+1. JavaScript似乎能保证reasonable的数值字面值被解析为浮点数之后，再toString成字符串还是reasonable的；但是不能保证两个reasonable的数值字面值被解析为浮点数之后，进行（加减乘除等）浮点运算的结果，toString成字符串后，仍然是reasonable的。这点比较有意思。
 2. 都怪自己看文档不仔细 23333333
 
