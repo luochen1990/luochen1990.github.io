@@ -92,7 +92,7 @@ $(document).on 'game-started', (ev, disturbance_type, computer_type, game_round)
 	$('#game-started-div').remove()
 	$('#main-frame').append("""<div id='game-started-div'>
 	<div id='score-div' class='row'></span><span class='col-xs-2' style='font-size:20pt'>SCORE:</span><span id='score' class='col-xs-2' style='font-size:20pt'>0</span></div>
-	<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>
+	<svg xmlns='https://www.w3.org/2000/svg' version='1.1'>
 		<circle id='left-cicle' cx='30%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />
 		<circle id='right-cicle' cx='70%' cy='50%' r='20%' stroke='white' stroke-width='1' fill='blue' />
 	</svg>
@@ -211,4 +211,3 @@ $(document).ready () ->
 	""")
 	$('#start-game').on 'click', (ev) ->
 		$(document).trigger('game-started', [Number($('#disturbance_type').val()), Number($('#computer_type').val()), Number($('#game_round').val())])
-

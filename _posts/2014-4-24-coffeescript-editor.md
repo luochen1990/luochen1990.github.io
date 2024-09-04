@@ -9,5 +9,4 @@ layout: default
 
 - [测试页面][h1]
 
-[h1]: http://luochen1990.me/try_coffee.html
-
+[h1]: https://blog.luo.xyz/try_coffee.html

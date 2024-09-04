@@ -18,9 +18,8 @@ layout: default
 > ![trying different parament of get][p2]
 
 
-[a1]: http://www.python.org/download/
-[a2]: http://pypi.python.org/pypi/virtualenv#downloads
+[a1]: https://www.python.org/download/
+[a2]: https://pypi.python.org/pypi/virtualenv#downloads
 [a3]: https://pypi.python.org/pypi/bottle/0.11.6
 [p1]: {{ site.res }}/4A86CD91.png
 [p2]: {{ site.res }}/C1DB3EFB.png
-

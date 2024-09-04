@@ -39,7 +39,7 @@ precise = (n) -> (x) ->
 	floor(x * a) / a
 ```
 
-[这里可以试运行](http://luochen1990.me/try_coffee?#cHJlY2lzZSA9IChuKSAtPiAoeCkgLT4KCXIgPSBmbG9vcihNYXRoLmxvZzEwKHgpKQoJYSA9ICgxMCAqKiAobiAtIDEgLSByKSkKCWZsb29yKHggKiBhKSAvIGEKCmxvZyAtPiBwcmVjaXNlKDIpKDAuMTIzNDUpCmxvZyAtPiBwcmVjaXNlKDIpKDEuMjM0NSkKbG9nIC0+IHByZWNpc2UoMikoMTIzLjQ1KQoKbG9nIC0+IDEgLyAwLjAwMDAxCiNuIC0gMSAtIHIgPT0gLTUKI2Zsb29yKHggKiBhKSA9PSAxCmxvZyAtPiBwcmVjaXNlKDEpKDEwMDAwMCk=)
+[这里可以试运行](https://blog.luo.xyz/try_coffee?#cHJlY2lzZSA9IChuKSAtPiAoeCkgLT4KCXIgPSBmbG9vcihNYXRoLmxvZzEwKHgpKQoJYSA9ICgxMCAqKiAobiAtIDEgLSByKSkKCWZsb29yKHggKiBhKSAvIGEKCmxvZyAtPiBwcmVjaXNlKDIpKDAuMTIzNDUpCmxvZyAtPiBwcmVjaXNlKDIpKDEuMjM0NSkKbG9nIC0+IHByZWNpc2UoMikoMTIzLjQ1KQoKbG9nIC0+IDEgLyAwLjAwMDAxCiNuIC0gMSAtIHIgPT0gLTUKI2Zsb29yKHggKiBhKSA9PSAxCmxvZyAtPiBwcmVjaXNlKDEpKDEwMDAwMCk=)
 
 但是，发现有些数据打印出的结果会是这样：
 
@@ -66,7 +66,7 @@ precise = (n) -> (x) ->
 	floor(x / a) * a
 ```
 
-[这里可以试运行](http://luochen1990.me/try_coffee?#cHJlY2lzZSA9IChuKSAtPiAoeCkgLT4KCXIgPSBmbG9vcihNYXRoLmxvZzEwKHgpKQoJYSA9ICgxMCAqKiAtKG4gLSAxIC0gcikpCglmbG9vcih4IC8gYSkgKiBhCgpsb2cgLT4gcHJlY2lzZSgyKSgwLjEyMzQ1KQpsb2cgLT4gcHJlY2lzZSgyKSgxLjIzNDUpCmxvZyAtPiBwcmVjaXNlKDIpKDEyMy40NSkKCmxvZyAtPiBwcmVjaXNlKDEpKDEwMDAwMCkKbG9nIC0+IHByZWNpc2UoMSkoMC4wMDAwMDUyMzQ1KQ==)
+[这里可以试运行](https://blog.luo.xyz/try_coffee?#cHJlY2lzZSA9IChuKSAtPiAoeCkgLT4KCXIgPSBmbG9vcihNYXRoLmxvZzEwKHgpKQoJYSA9ICgxMCAqKiAtKG4gLSAxIC0gcikpCglmbG9vcih4IC8gYSkgKiBhCgpsb2cgLT4gcHJlY2lzZSgyKSgwLjEyMzQ1KQpsb2cgLT4gcHJlY2lzZSgyKSgxLjIzNDUpCmxvZyAtPiBwcmVjaXNlKDIpKDEyMy40NSkKCmxvZyAtPiBwcmVjaXNlKDEpKDEwMDAwMCkKbG9nIC0+IHByZWNpc2UoMSkoMC4wMDAwMDUyMzQ1KQ==)
 
 虽然上面那个测试样例通过了，但是总觉得这个方法正确的可能性不大，所以又试了很多测试数据，终于被我找到了bug：
 
@@ -74,7 +74,7 @@ precise = (n) -> (x) ->
 ## precise(1)(0.0000052345) ==> 0.0000049999999999999996
 ```
 
-另外，其中的`floor(Math.log10(x))`这一步其实也是有问题的，[这里做了个测试](http://luochen1990.me/try_coffee?#ZiA9ICh4KSAtPiBmbG9vcihNYXRoLmxvZzEwKHgpKQoKYSA9IG1hcCgoaSkgLT4gMTAgKiogaSkgcmFuZ2UoMzApCmxvZyAtPiBsaXN0IGEKbG9nIGFsbCgoeCkgLT4gMTAgKiogZih4KSA9PSB4KSBhCgpiID0gbWFwKChpKSAtPiAxMCAqKiBpIC0gMWUtMTApIHJhbmdlKDEwKQpsb2cgLT4gbGlzdCBiCmxvZyBsaXN0IG1hcCgoeCkgLT4gMTAgKiogZih4KSA8IHgpIGIK)，测试发现，小于但是十分接近10的整数次幂的数，处理时会出现精度问题。（当然Math.log10还有一些浏览器兼容问题，但都可以解决，问题不大）
+另外，其中的`floor(Math.log10(x))`这一步其实也是有问题的，[这里做了个测试](https://blog.luo.xyz/try_coffee?#ZiA9ICh4KSAtPiBmbG9vcihNYXRoLmxvZzEwKHgpKQoKYSA9IG1hcCgoaSkgLT4gMTAgKiogaSkgcmFuZ2UoMzApCmxvZyAtPiBsaXN0IGEKbG9nIGFsbCgoeCkgLT4gMTAgKiogZih4KSA9PSB4KSBhCgpiID0gbWFwKChpKSAtPiAxMCAqKiBpIC0gMWUtMTApIHJhbmdlKDEwKQpsb2cgLT4gbGlzdCBiCmxvZyBsaXN0IG1hcCgoeCkgLT4gMTAgKiogZih4KSA8IHgpIGIK)，测试发现，小于但是十分接近10的整数次幂的数，处理时会出现精度问题。（当然Math.log10还有一些浏览器兼容问题，但都可以解决，问题不大）
 
 最终，发现想通过数值计算实现这个需求似乎走不通，因为不管怎么样，要得到结果最后一步都需要经过浮点数计算，而一旦进行浮点数计算就会产生精度损失，然后就会产生一个unreasonable的结果。
 
@@ -87,11 +87,10 @@ precise = (n) -> (x) ->
 	parseFloat x.toPrecision(n)
 ```
 
-[这里可以试运行](http://luochen1990.me/try_coffee?#cHJlY2lzZSA9IChuKSAtPiAoeCkgLT4KCXBhcnNlRmxvYXQgeC50b1ByZWNpc2lvbihuKQoKbG9nIC0+IHByZWNpc2UoMSkoMTAwMDAwKQpsb2cgLT4gcHJlY2lzZSgxKSgwLjAwMDAwNTIzNDUpCgpsb2cgLT4gcHJlY2lzZSgyKSgwLjEyMzQ1KQpsb2cgLT4gcHJlY2lzZSgyKSgxLjIzNDUpCmxvZyAtPiBwcmVjaXNlKDIpKDEyMy40NSk=)
+[这里可以试运行](https://blog.luo.xyz/try_coffee?#cHJlY2lzZSA9IChuKSAtPiAoeCkgLT4KCXBhcnNlRmxvYXQgeC50b1ByZWNpc2lvbihuKQoKbG9nIC0+IHByZWNpc2UoMSkoMTAwMDAwKQpsb2cgLT4gcHJlY2lzZSgxKSgwLjAwMDAwNTIzNDUpCgpsb2cgLT4gcHJlY2lzZSgyKSgwLjEyMzQ1KQpsb2cgLT4gcHJlY2lzZSgyKSgxLjIzNDUpCmxvZyAtPiBwcmVjaXNlKDIpKDEyMy40NSk=)
 
 结论
 ----
 
 1. JavaScript似乎能保证reasonable的数值字面值被解析为浮点数之后，再toString成字符串还是reasonable的；但是不能保证两个reasonable的数值字面值被解析为浮点数之后，进行（加减乘除等）浮点运算的结果，toString成字符串后，仍然是reasonable的。这点比较有意思。
 2. 都怪自己看文档不仔细 23333333
-

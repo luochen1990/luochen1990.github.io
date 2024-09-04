@@ -13,7 +13,7 @@ tags: Javascript, assert, assertion, AST, CoffeeScript, coffee-mate, macro, lisp
 我的实现
 --------
 
-我曾经自己实现过一个断言语句，它现在被包含在[`CoffeeMate`](https://github.com/luochen1990/coffee-mate/wiki)这个库里。这个断言语句其实就是一个名为`assert`的函数，在[`CoffeeScript`](http://coffeescript.org/)里你可以这样使用它：
+我曾经自己实现过一个断言语句，它现在被包含在[`CoffeeMate`](https://github.com/luochen1990/coffee-mate/wiki)这个库里。这个断言语句其实就是一个名为`assert`的函数，在[`CoffeeScript`](https://coffeescript.org/)里你可以这样使用它：
 
 ```coffeescript
 assert -> fib(0) is 0 and fib(1) is 1
@@ -110,9 +110,8 @@ describe 'fib', ->
 
 所以我不打算做这件事了，这已经不是造轮子或不造轮子的问题了。假如要想让一辆车happy地跑起来，我们得为此造一辆汽车。。。那么，这应该不是我们做得不够好，而是汽车本身造得有问题了。。
 
-可以想象在js引擎中实现一个这样的assert并不困难。假如我今天花了大力气折腾出这么一个东西，然后明天js标准里就包含了（老赵的[Wind.js](https://github.com/JeffreyZhao/wind)就是一个例子，其通过hack实现的async, await已经被包含到[ES7](http://es6.ruanyifeng.com/#docs/promise)中），我不会开心的。。。
+可以想象在js引擎中实现一个这样的assert并不困难。假如我今天花了大力气折腾出这么一个东西，然后明天js标准里就包含了（老赵的[Wind.js](https://github.com/JeffreyZhao/wind)就是一个例子，其通过hack实现的async, await已经被包含到[ES7](https://es6.ruanyifeng.com/#docs/promise)中），我不会开心的。。。
 
 另一方面，即使js引擎不提供这样的一个assert语句，而是提供了一种访问AST的方式（而不是仅仅提供一个fun.toString()这样的玩意），允许用户获取一个函数的AST（比如`fun.toAST()`），并且可以对AST进行求值（比如`evalAST(the_ast_of_fun)`），那么我实现起一个这样的assert也会简单得多得多。。。
 
 （事实上，[python](https://docs.python.org/2/library/ast.html)之类的不少动态语言都提供了访问AST的机制。当然，关于Javascript的AST格式并没有一个标准，所以这事儿实现起来并不容易。。
-
